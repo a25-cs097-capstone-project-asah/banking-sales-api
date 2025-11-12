@@ -1,7 +1,9 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const router = require('./src/routes');
+
+// Import Routes
+const authenticationRoutes = require('./src/api/authentications/routes');
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -19,7 +21,8 @@ app.get('/health', (req, res) => {
   });
 });
 
-app.use('/api', router);
+// Routes
+app.use('/authentications', authenticationRoutes);
 
 app.listen(port, host, () => {
   console.log(`Server berjalan pada http://${host}:${port}`);
