@@ -4,6 +4,7 @@ const cors = require('cors');
 
 // Import Routes
 const authenticationRoutes = require('./src/api/authentications/routes');
+const usersRoutes = require('./src/api/users/routes');
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -23,6 +24,7 @@ app.get('/health', (req, res) => {
 
 // Routes
 app.use('/authentications', authenticationRoutes);
+app.use('/users', usersRoutes);
 
 app.listen(port, host, () => {
   console.log(`Server berjalan pada http://${host}:${port}`);
