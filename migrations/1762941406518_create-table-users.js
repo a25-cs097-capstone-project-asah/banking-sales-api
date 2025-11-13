@@ -10,7 +10,7 @@ export const up = (pgm) => {
       unique: true,
     },
     password: {
-      type: 'VARCHAR(50)',
+      type: 'VARCHAR(100)',
       notNull: true,
     },
     fullname: {
@@ -28,7 +28,6 @@ export const up = (pgm) => {
     role: {
       type: 'VARCHAR(20)',
       notNull: true,
-      default: 'sales',
     },
     created_at: {
       type: 'VARCHAR(30)',

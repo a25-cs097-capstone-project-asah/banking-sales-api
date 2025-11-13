@@ -1,7 +1,7 @@
 export const up = (pgm) => {
   pgm.createTable('authentications', {
     token: {
-      type: 'VARCHAR(60)',
+      type: 'TEXT',
     },
   });
 };
