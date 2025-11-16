@@ -1,6 +1,6 @@
 const asyncHandler = require('../../utils/asyncHandler');
 const { validatePayload } = require('./validator');
-const usersService = require('../../services/postgre');
+const { usersService } = require('../../services/postgre');
 
 const postUserController = asyncHandler(async (req, res) => {
   validatePayload(req.body);

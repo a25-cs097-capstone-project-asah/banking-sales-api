@@ -5,7 +5,7 @@ const router = express.Router();
 const controller = require('./controller');
 
 router.post('/', controller.postLeadController);
-router.get('/', controller.getAllLeads);
-router.get('/:id', controller.getLeadDetail);
+router.get('/', controller.getAllLeadsController);
+router.get('/:id', controller.getLeadDetailController);
 
 module.exports = router;

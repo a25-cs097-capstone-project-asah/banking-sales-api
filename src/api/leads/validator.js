@@ -3,7 +3,7 @@ const InvariantError = require('../../exceptions/InvariantError');
 
 const postLeadSchema = Joi.object({
   name: Joi.string().required(),
-  email: Joi.string().email().allow().required(),
+  email: Joi.string().email().required(),
   phone: Joi.string().required(),
   age: Joi.number().min(18).max(100).required(),
   job: Joi.string(),
@@ -25,9 +25,9 @@ const postLeadSchema = Joi.object({
   consPriceIdx: Joi.number(),
   consConfIdx: Joi.number(),
   euribor3m: Joi.number(),
-  nrEmpoyed: Joi.number(),
+  nrEmployed: Joi.number(),
   probabilityScore: Joi.number().min(0).max(100),
-  probabilityResult: Joi.string(),
+  predictionResult: Joi.string(),
   category: Joi.string(),
   status: Joi.string(),
 });

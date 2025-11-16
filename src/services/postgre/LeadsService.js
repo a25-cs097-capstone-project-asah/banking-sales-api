@@ -167,7 +167,7 @@ class LeadsService {
     const result = await this._pool.query(query);
     return {
       leads: result.rows.map(listLeadToModel),
-      paginations: {
+      pagination: {
         page,
         limit,
         totalLeads,

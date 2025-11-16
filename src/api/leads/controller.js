@@ -1,6 +1,7 @@
 const asyncHandler = require('../../utils/asyncHandler');
 const { postValidatePayload } = require('./validator');
-const leadsService = require('../../services/postgre');
+
+const { leadsService } = require('../../services/postgre');
 
 const postLeadController = asyncHandler(async (req, res) => {
   postValidatePayload(req.body);
@@ -15,7 +16,7 @@ const postLeadController = asyncHandler(async (req, res) => {
   });
 });
 
-const getAllLeads = asyncHandler(async (req, res) => {
+const getAllLeadsController = asyncHandler(async (req, res) => {
   const {
     page,
     limit,
@@ -47,12 +48,12 @@ const getAllLeads = asyncHandler(async (req, res) => {
     status: 'success',
     data: {
       leads: result.leads,
-      paginations: result.paginations,
+      pagination: result.pagination,
     },
   });
 });
 
-const getLeadDetail = asyncHandler(async (req, res) => {
+const getLeadDetailController = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const lead = await leadsService.getLeadsDetail(id);
   res.status(200).json({
@@ -63,4 +64,8 @@ const getLeadDetail = asyncHandler(async (req, res) => {
   });
 });
 
-module.exports = { postLeadController, getAllLeads, getLeadDetail };
+module.exports = {
+  postLeadController,
+  getAllLeadsController,
+  getLeadDetailController,
+};

@@ -48,9 +48,9 @@ const leadsToModel = ({
   cons_price_idx,
   cons_conf_idx,
   euribor3m,
-  nr_empoyed,
+  nr_employed,
   probability_score,
-  probability_result,
+  prediction_result,
   category,
 
   // portal
@@ -86,9 +86,9 @@ const leadsToModel = ({
   constPriceIdx: cons_price_idx,
   constConfIdx: cons_conf_idx,
   euribor3m,
-  nrEmpoyed: nr_empoyed,
+  nrEmployed: nr_employed,
   probabilityScore: probability_score,
-  probabilityResult: probability_result,
+  predictionResult: prediction_result,
   category,
 
   // portal
