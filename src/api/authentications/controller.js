@@ -1,16 +1,21 @@
+// Import validations
 const {
   postValidatePayload,
   putValidatePayload,
   deleteValidatePayload,
 } = require('./validator');
+
+// Import services
+const {
+  authenticationsService,
+  usersService,
+} = require('../../services/postgre');
+
+// Import utils
 const tokenManager = require('../../utils/tokenManager');
 const asyncHandler = require('../../utils/asyncHandler');
-const AuthenticationsService = require('../../services/postgre/AuthenticationsService');
-const UsersService = require('../../services/postgre/UsersService');
 
-const authenticationsService = new AuthenticationsService();
-const usersService = new UsersService();
-
+// Controller pada fitur login
 const postAuthenticationsController = asyncHandler(async (req, res) => {
   postValidatePayload(req.body);
   const { username, password } = req.body;
@@ -48,6 +53,7 @@ const putAuthenticationsController = asyncHandler(async (req, res) => {
   });
 });
 
+// Controller pada fitur logout
 const deleteAuthenticationsController = asyncHandler(async (req, res) => {
   deleteValidatePayload(req.body);
   const { refreshToken } = req.body;

@@ -20,4 +20,100 @@ const usersToModel = ({
   lastLogin: last_login,
 });
 
-module.exports = { usersToModel };
+const leadsToModel = ({
+  // personal
+  id,
+  name,
+  email,
+  phone,
+  age,
+  job,
+  marital,
+  education,
+  default: defaultCredit,
+  housing,
+  loan,
+  balance,
+  contact,
+  month,
+  day_of_week,
+  duration,
+  campaign,
+  pdays,
+  previous,
+  poutcome,
+
+  // economic indicator
+  emp_var_rate,
+  cons_price_idx,
+  cons_conf_idx,
+  euribor3m,
+  nr_employed,
+  probability_score,
+  prediction_result,
+  category,
+
+  // portal
+  status,
+  assigned_to,
+  last_contacted_at,
+  created_at,
+}) => ({
+  // personal
+  id,
+  name,
+  email,
+  phone,
+  age,
+  job,
+  marital,
+  education,
+  defaultCredit,
+  housing,
+  loan,
+  balance,
+  contact,
+  month,
+  dayOfWeek: day_of_week,
+  duration,
+  campaign,
+  pdays,
+  previous,
+  poutcome,
+
+  // economic indicator
+  empVarRate: emp_var_rate,
+  constPriceIdx: cons_price_idx,
+  constConfIdx: cons_conf_idx,
+  euribor3m,
+  nrEmployed: nr_employed,
+  probabilityScore: probability_score,
+  predictionResult: prediction_result,
+  category,
+
+  // portal
+  status,
+  assignedTo: assigned_to,
+  lastContactedAt: last_contacted_at,
+  createdAt: created_at,
+});
+
+const listLeadToModel = ({
+  name,
+  email,
+  age,
+  job,
+  probability_score,
+  category,
+  status,
+}) => ({
+  name,
+  email,
+  age,
+  job,
+  probabilityScore: probability_score,
+  category,
+  status,
+});
+
+module.exports = { usersToModel, leadsToModel, listLeadToModel };

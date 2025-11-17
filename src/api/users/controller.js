@@ -1,13 +1,12 @@
 const asyncHandler = require('../../utils/asyncHandler');
 const { validatePayload } = require('./validator');
-const UsersService = require('../../services/postgre/UsersService');
-const userService = new UsersService();
+const { usersService } = require('../../services/postgre');
 
 const postUserController = asyncHandler(async (req, res) => {
   validatePayload(req.body);
   const { username, password, fullname, email, phone, role } = req.body;
 
-  const userId = await userService.addUser({
+  const userId = await usersService.addUser({
     username,
     password,
     fullname,
@@ -25,7 +24,7 @@ const postUserController = asyncHandler(async (req, res) => {
 });
 
 const getUsersController = asyncHandler(async (req, res) => {
-  const users = await userService.getUsers();
+  const users = await usersService.getUsers();
   res.status(200).json({
     status: 'success',
     data: {
@@ -35,7 +34,7 @@ const getUsersController = asyncHandler(async (req, res) => {
 });
 
 const getUserDetailController = asyncHandler(async (req, res) => {
-  const user = await userService.getUserDetail(req.params.id);
+  const user = await usersService.getUserDetail(req.params.id);
   res.status(200).json({
     status: 'success',
     data: {

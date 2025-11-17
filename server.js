@@ -5,6 +5,7 @@ const cors = require('cors');
 // Import Routes
 const authenticationRoutes = require('./src/api/authentications/routes');
 const usersRoutes = require('./src/api/users/routes');
+const leadsRouter = require('./src/api/leads/routes');
 
 // Import errorHandler
 const errorHandler = require('./src/middlewares/errorHandler');
@@ -28,6 +29,7 @@ app.get('/health', (req, res) => {
 // Routes
 app.use('/authentications', authenticationRoutes);
 app.use('/users', usersRoutes);
+app.use('/leads', leadsRouter);
 
 // errorHandler
 app.use(errorHandler);
