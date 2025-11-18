@@ -6,7 +6,7 @@ const authentications = (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
     if (!authHeader) {
-      throw new AuthenticationError('Token tidak ditemukan');
+      throw new AuthenticationError('woppp mana tokennya💪😠🫵?!');
     }
 
     const token = authHeader.replace(/^Bearer\s+/i, '').trim();
