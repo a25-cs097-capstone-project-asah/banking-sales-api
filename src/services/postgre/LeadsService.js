@@ -179,7 +179,11 @@ class LeadsService {
   // Fitur menampilkan detail dari lead/calon nasabah
   async getLeadsDetail(id) {
     const query = {
-      text: 'SELECT * FROM leads WHERE id = $1',
+      text: `SELECT id, name, email, phone, age, 
+                    job, marital, education, housing, loan, 
+                    balance, contact, month, day_of_week, duration, 
+                    probability_score, prediction_result, category, status 
+             FROM leads WHERE id = $1`,
       values: [id],
     };
 

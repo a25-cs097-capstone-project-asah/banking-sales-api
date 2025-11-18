@@ -1,23 +1,24 @@
 {
   "name": "backend",
   "version": "1.0.0",
-  "description": "",
+  "description": "RESTful API untuk portal banking sales web.",
   "main": "server.js",
   "scripts": {
-    "start": "node server",
-    "dev": "nodemon server",
-    "migrate": "node-pg-migrate",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "cross-env NODE_ENV=production node server",
+    "dev": "cross-env NODE_ENV=development nodemon server",
+    "migrate": "node-pg-migrate"
   },
-  "keywords": [],
-  "author": [
-    "Adriyan"
+  "keywords": [
+    "RESTful API",
+    "Node.js",
+    "Express.js"
   ],
+  "author": "Adriyan",
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^6.0.0",
     "cors": "^2.8.5",
-    "dotenv": "^17.2.3",
+    "dotenv-flow": "^4.1.0",
     "express": "^5.1.0",
     "joi": "^18.0.1",
     "jsonwebtoken": "^9.0.2",
@@ -27,6 +28,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
+    "cross-env": "^10.1.0",
     "eslint": "^9.39.1",
     "globals": "^16.5.0",
     "nodemon": "^3.1.10"
