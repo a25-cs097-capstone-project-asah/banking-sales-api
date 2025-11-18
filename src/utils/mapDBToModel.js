@@ -71,7 +71,7 @@ const leadsToModel = ({
   defaultCredit,
   housing,
   loan,
-  balance,
+  balance: parseFloat(balance),
   contact,
   month,
   dayOfWeek: day_of_week,
@@ -111,9 +111,30 @@ const listLeadToModel = ({
   email,
   age,
   job,
-  probabilityScore: probability_score,
+  probabilityScore: parseFloat(probability_score),
   category,
   status,
 });
 
-module.exports = { usersToModel, leadsToModel, listLeadToModel };
+const convertionTrendToModel = (leads) => ({
+  date: leads.date.toISOString().split('T')[0],
+  totalLeads: parseInt(leads.total_leads),
+  converted: parseInt(leads.converted),
+  convertionRate:
+    leads.total_leads > 0
+      ? parseFloat((leads.converted / leads.total_leads) * 100)
+      : 0,
+});
+
+const distributionStatsToModel = (leads) => ({
+  category: leads.category,
+  count: parseInt(leads.count),
+});
+
+module.exports = {
+  usersToModel,
+  leadsToModel,
+  listLeadToModel,
+  convertionTrendToModel,
+  distributionStatsToModel,
+};
