@@ -2,7 +2,7 @@ const tokenManager = require('../utils/tokenManager');
 const AuthenticationError = require('../exceptions/AuthenticationError');
 const InvariantError = require('../exceptions/InvariantError');
 
-const authentications = (req, res, next) => {
+const auth = (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
     if (!authHeader) {
@@ -22,4 +22,4 @@ const authentications = (req, res, next) => {
   }
 };
 
-module.exports = authentications;
+module.exports = auth;

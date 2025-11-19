@@ -11,9 +11,9 @@ const userSchema = Joi.object({
 });
 
 const validatePayload = (payload) => {
-  const { error } = userSchema.validate(payload);
-  if (error) {
-    throw new InvariantError(error.message);
+  const { e } = userSchema.validate(payload);
+  if (e) {
+    throw new InvariantError(e.message);
   }
 };
 

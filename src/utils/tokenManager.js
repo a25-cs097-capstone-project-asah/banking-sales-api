@@ -15,11 +15,11 @@ const tokenManager = {
   verifyAccessToken: (payload) => {
     try {
       return Jwt.verify(payload, process.env.ACCESS_TOKEN_KEY);
-    } catch (error) {
+    } catch (e) {
       // Throw specific errors based on JWT error type
-      if (error.name === 'TokenExpiredError') {
+      if (e.name === 'TokenExpiredError') {
         throw new InvariantError('Token telah kadaluarsa');
-      } else if (error.name === 'JsonWebTokenError') {
+      } else if (e.name === 'JsonWebTokenError') {
         throw new InvariantError('Token tidak valid');
       } else {
         throw new InvariantError('Token verification failed');
@@ -29,8 +29,8 @@ const tokenManager = {
   verifyRefreshToken: (payload) => {
     try {
       return Jwt.verify(payload, process.env.REFRESH_TOKEN_KEY);
-    } catch (error) {
-      if (error.name === 'TokenExpiredError') {
+    } catch (e) {
+      if (e.name === 'TokenExpiredError') {
         throw new InvariantError('Refresh token telah kadaluarsa');
       } else {
         throw new InvariantError('Refresh token tidak valid');

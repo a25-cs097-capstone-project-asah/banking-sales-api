@@ -1,11 +1,11 @@
 const express = require('express');
 const router = express.Router();
 
-const authentications = require('../../middlewares/authentications');
+const auth = require('../../middlewares/auth');
 const controller = require('./controller');
 
-router.post('/', authentications, controller.postLeadController);
-router.get('/', authentications, controller.getAllLeadsController);
-router.get('/:id', authentications, controller.getLeadDetailController);
+router.post('/', auth, controller.postLeadController);
+router.get('/', auth, controller.getAllLeadsController);
+router.get('/:id', auth, controller.getLeadDetailController);
 
 module.exports = router;

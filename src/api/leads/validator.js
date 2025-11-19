@@ -33,9 +33,9 @@ const postLeadSchema = Joi.object({
 });
 
 const postValidatePayload = (payload) => {
-  const { error } = postLeadSchema.validate(payload);
-  if (error) {
-    throw new InvariantError(error.message);
+  const { e } = postLeadSchema.validate(payload);
+  if (e) {
+    throw new InvariantError(e.message);
   }
 };
 
