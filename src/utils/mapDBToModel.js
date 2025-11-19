@@ -71,7 +71,7 @@ const leadsToModel = ({
   defaultCredit,
   housing,
   loan,
-  balance: parseFloat(balance),
+  balance,
   contact,
   month,
   dayOfWeek: day_of_week,
@@ -83,8 +83,8 @@ const leadsToModel = ({
 
   // economic indicator
   empVarRate: emp_var_rate,
-  constPriceIdx: cons_price_idx,
-  constConfIdx: cons_conf_idx,
+  consPriceIdx: cons_price_idx,
+  consConfIdx: cons_conf_idx,
   euribor3m,
   nrEmployed: nr_employed,
   probabilityScore: probability_score,
@@ -111,7 +111,7 @@ const listLeadToModel = ({
   email,
   age,
   job,
-  probabilityScore: parseFloat(probability_score),
+  probabilityScore: probability_score,
   category,
   status,
 });
@@ -131,10 +131,26 @@ const distributionStatsToModel = (leads) => ({
   count: parseInt(leads.count),
 });
 
+const notesToModel = ({
+  lead_id,
+  user_id,
+  body,
+  created_at,
+  fullname,
+  role,
+}) => ({
+  leadId: lead_id,
+  userId: user_id,
+  body,
+  createdAt: created_at,
+  createdBy: { fullname, role },
+});
+
 module.exports = {
   usersToModel,
   leadsToModel,
   listLeadToModel,
   convertionTrendToModel,
   distributionStatsToModel,
+  notesToModel,
 };

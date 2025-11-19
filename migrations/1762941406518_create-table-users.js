@@ -30,11 +30,11 @@ export const up = (pgm) => {
       notNull: true,
     },
     created_at: {
-      type: 'VARCHAR(30)',
+      type: 'TIMESTAMP',
       notNull: true,
     },
     last_login: {
-      type: 'VARCHAR(30)',
+      type: 'TIMESTAMP',
     },
   });
 };

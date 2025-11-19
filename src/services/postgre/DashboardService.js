@@ -1,7 +1,7 @@
 const {
   listLeadToModel,
-  convertionToModel,
   distributionStatsToModel,
+  convertionTrendToModel,
 } = require('../../utils/mapDBToModel');
 
 class DashboardService {
@@ -15,9 +15,9 @@ class DashboardService {
       /* eslint-disable */
       totalLeads: 'SELECT COUNT(*) AS total_leads FROM leads',
       convertedLeads:
-        "SELECT COUNT(*) AS total FROM leads WHERE status = 'converted'",
+        "SELECT COUNT(*) AS total_leads FROM leads WHERE status = 'converted'",
       highPriorityLeads:
-        "SELECT COUNT(*) AS total FROM leads WHERE category = 'high'",
+        "SELECT COUNT(*) AS total_leads FROM leads WHERE category = 'high'",
       averageScore:
         'SELECT ROUND(AVG(probability_score)::numeric, 2) AS average FROM leads',
       /* eslint-enable */
@@ -65,14 +65,12 @@ class DashboardService {
         COALESCE(COUNT(leads.id), 0) AS total_leads,
         COALESCE(COUNT(CASE WHEN leads.status = 'converted' THEN 1 END), 0) AS converted
         FROM date_series LEFT JOIN leads
-        ON DATE(TO_TIMESTAMP(
-          leads.created_at 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"'
-        )) = date_series.date
+        ON DATE(leads.created_at::timestamp) = date_series.date
         GROUP BY date_series.date
         ORDER BY date_series.date ASC`
     );
 
-    return result.rows.map(convertionToModel);
+    return result.rows.map(convertionTrendToModel);
   }
 
   // Menampilkan persentase leads berdasarkan kategori pada pie chart
@@ -82,8 +80,8 @@ class DashboardService {
         FROM leads WHERE category IS NOT NULL
         GROUP BY category
         ORDER BY CASE category
-          WHEN 'high' THEN 1,
-          WHEN 'medium' THEN 2,
+          WHEN 'high' THEN 1
+          WHEN 'medium' THEN 2
           WHEN 'low' THEN 3
       END`
     );

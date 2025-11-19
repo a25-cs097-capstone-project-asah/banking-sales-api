@@ -104,6 +104,23 @@ class LeadsService {
   // Fitur menampilkan seluruh lead/calon nasabah
   // sebanyak 10 nasabah per page.
   async getAllLeads({ page, limit, sortBy, order, filters }) {
+    const allowSortBy = [
+      'probability_score',
+      'category',
+      'status',
+      'job',
+      'name',
+    ];
+    const allowOrder = ['DESC', 'ASC'];
+
+    if (!allowSortBy.includes(sortBy)) {
+      sortBy = 'probability_score';
+    }
+
+    if (!allowOrder.includes(order)) {
+      order = 'DESC';
+    }
+
     const where = []; // Menampung string kondisi WHERE
     const values = []; // Menampung parameterized query
     let index = 1; // Index untuk PostgreSQL placeholder

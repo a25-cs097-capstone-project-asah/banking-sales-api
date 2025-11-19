@@ -107,7 +107,7 @@ export const up = (pgm) => {
       type: 'VARCHAR(30)',
     },
     created_at: {
-      type: 'VARCHAR(30)',
+      type: 'TIMESTAMP',
       notNull: true,
     },
   });
