@@ -2,7 +2,7 @@
 const { nanoid } = require('nanoid');
 
 // Import utils
-const { leadsToModel, listLeadToModel } = require('../../utils/mapDBToModel');
+const { leadsToModel } = require('../../utils/mapDBToModel');
 
 // Import error handling
 const InvariantError = require('../../exceptions/InvariantError');
@@ -183,7 +183,7 @@ class LeadsService {
 
     const result = await this._pool.query(query);
     return {
-      leads: result.rows.map(listLeadToModel),
+      leads: result.rows.map(leadsToModel),
       pagination: {
         page,
         limit,

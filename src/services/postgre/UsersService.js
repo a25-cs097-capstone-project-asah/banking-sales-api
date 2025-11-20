@@ -23,7 +23,7 @@ class UsersService {
       role = 'sales',
     } = userData;
     await this.verifyNewUsername(username);
-    const id = `user-${nanoid(15)}`;
+    const id = `user-${nanoid(8)}`;
     const createdAt = new Date().toISOString();
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -75,7 +75,7 @@ class UsersService {
 
   async getUserDetail(id) {
     const query = {
-      text: 'SELECT * FROM users WHERE id = $1',
+      text: 'SELECT id, username, fullname, email, phone, role, created_at FROM users WHERE id = $1',
       values: [id],
     };
 
