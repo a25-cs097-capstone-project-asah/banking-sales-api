@@ -2,6 +2,7 @@ const { nanoid } = require('nanoid');
 const NotFoundError = require('../../exceptions/NotFoundError');
 const InvariantError = require('../../exceptions/InvariantError');
 const { notesToModel } = require('../../utils/mapDBToModel');
+const AuthorizationError = require('../../exceptions/AuthorizationError');
 
 class NotesService {
   constructor(pool) {
@@ -53,15 +54,39 @@ class NotesService {
     return result.rows.map(notesToModel);
   }
 
-  async deleteNotes(noteId, userId) {
+  async editNoteByNoteId(noteId, { body }) {
     const query = {
-      text: 'DELETE FROM notes WHERE id = $1 AND user_id = $2 RETURNING id',
-      values: [noteId, userId],
+      text: 'UPDATE notes SET body = $1 WHERE id = $2 RETURNING id',
+      values: [body, noteId],
+    };
+
+    const result = await this._pool.query(query);
+    if (!result.rows.length) {
+      throw new NotFoundError('Catatan gagal diperbarui. Id tidak ditemukan');
+    }
+  }
+
+  async deleteNoteByNoteId(noteId) {
+    const query = {
+      text: 'DELETE FROM notes WHERE id = $1 RETURNING id',
+      values: [noteId],
     };
 
     const result = await this._pool.query(query);
     if (!result.rows.length) {
       throw new NotFoundError('Gagal menghapus catatan. Id tidak ditemukan');
+    }
+  }
+
+  async verifyNoteAccess(noteId, userId) {
+    const query = {
+      text: 'SELECT * FROM notes WHERE id = $1 AND user_id = $2',
+      values: [noteId, userId],
+    };
+
+    const result = await this._pool.query(query);
+    if (!result.rows.length) {
+      throw new AuthorizationError('Anda tidak berhak mengakses resource ini');
     }
   }
 }

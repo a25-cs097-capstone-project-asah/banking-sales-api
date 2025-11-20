@@ -6,6 +6,7 @@ const controller = require('./controller');
 
 router.post('/leads/:leadId/notes', auth, controller.postNotesController);
 router.get('/leads/:leadId/notes', auth, controller.getNotesByLeadIdController);
-router.delete('/notes/:noteId', auth, controller.deleteNoteController);
+router.put('/notes/:noteId', auth, controller.putNoteByNoteIdController);
+router.delete('/notes/:noteId', auth, controller.deleteNoteByNoteIdController);
 
 module.exports = router;

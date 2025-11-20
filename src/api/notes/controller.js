@@ -6,7 +6,7 @@ const postNotesController = asyncHandler(async (req, res) => {
   noteValidatePayload(req.body);
   const { leadId } = req.params;
   const { body } = req.body;
-  const userId = req.userId;
+  const { userId } = req;
 
   const noteId = await notesService.addNotes(leadId, userId, body);
   res.status(201).json({
@@ -30,22 +30,35 @@ const getNotesByLeadIdController = asyncHandler(async (req, res) => {
   });
 });
 
-const deleteNoteController = asyncHandler(async (req, res) => {
+const putNoteByNoteIdController = asyncHandler(async (req, res) => {
+  noteValidatePayload(req.body);
+  const { noteId } = req.params;
+  const { userId } = req;
+
+  await notesService.verifyNoteAccess(noteId, userId);
+  await notesService.editNoteByNoteId(noteId, req.body);
+
+  res.status(200).json({
+    status: 'success',
+    message: 'Catatan berhasil diperbarui',
+  });
+});
+
+const deleteNoteByNoteIdController = asyncHandler(async (req, res) => {
   const { noteId } = req.params;
   const userId = req.userId;
 
-  const note = await notesService.deleteNotes(noteId, userId);
+  await notesService.verifyNoteAccess(noteId, userId);
+  await notesService.deleteNoteByNoteId(noteId);
   res.status(200).json({
     status: 'success',
     message: 'Catatan berhasil dihapus',
-    data: {
-      note,
-    },
   });
 });
 
 module.exports = {
   postNotesController,
   getNotesByLeadIdController,
-  deleteNoteController,
+  putNoteByNoteIdController,
+  deleteNoteByNoteIdController,
 };

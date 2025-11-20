@@ -9,7 +9,7 @@ const auth = (req, res, next) => {
       throw new AuthenticationError('woppp mana tokennya💪😠🫵?!');
     }
 
-    const token = authHeader.replace(/^Bearer\s+/i, '').trim();
+    const token = authHeader.split(' ')[1];
     if (!token) {
       throw new InvariantError('Token tidak provided');
     }
