@@ -131,19 +131,15 @@ const distributionStatsToModel = (leads) => ({
   count: parseInt(leads.count),
 });
 
-const notesToModel = ({
-  lead_id,
-  user_id,
-  body,
-  created_at,
-  fullname,
-  role,
-}) => ({
-  leadId: lead_id,
-  userId: user_id,
-  body,
-  createdAt: created_at,
-  createdBy: { fullname, role },
+const notesToModel = (row) => ({
+  leadId: row.lead_id,
+  userId: row.user_id,
+  body: row.body,
+  createdAt: row.created_at,
+  createdBy: {
+    fullname: row.fullname,
+    role: row.role,
+  },
 });
 
 module.exports = {

@@ -6,9 +6,9 @@ const postNotesController = asyncHandler(async (req, res) => {
   noteValidatePayload(req.body);
   const { leadId } = req.params;
   const { body } = req.body;
-  const { userId } = req.userId;
+  const userId = req.userId;
 
-  const noteId = await notesService.addNotes({ leadId, body, userId });
+  const noteId = await notesService.addNotes(leadId, userId, body);
   res.status(201).json({
     status: 'success',
     message: 'Catatan berhasil ditambahkan',
@@ -32,7 +32,7 @@ const getNotesByLeadIdController = asyncHandler(async (req, res) => {
 
 const deleteNoteController = asyncHandler(async (req, res) => {
   const { noteId } = req.params;
-  const { userId } = req.userId;
+  const userId = req.userId;
 
   const note = await notesService.deleteNotes(noteId, userId);
   res.status(200).json({

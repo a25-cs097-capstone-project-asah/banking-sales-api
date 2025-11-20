@@ -9,7 +9,7 @@ class NotesService {
   }
 
   async addNotes(leadId, userId, body) {
-    this.verifyLeadExist(leadId);
+    await this.verifyLeadExist(leadId);
 
     const id = `nt-${nanoid(6)}`;
     const createdAt = new Date().toISOString();
@@ -29,7 +29,7 @@ class NotesService {
 
   async verifyLeadExist(leadId) {
     const query = {
-      text: 'SELECT id FROM leads WHERE leadId = $1',
+      text: 'SELECT id FROM leads WHERE id = $1',
       values: [leadId],
     };
 
@@ -41,7 +41,7 @@ class NotesService {
 
   async getNotesByLeadId(leadId) {
     const query = {
-      text: `SELECT notes.id, notes.body, notes.created_at
+      text: `SELECT notes.id, notes.body, notes.created_at, users.fullname, users.role
               FROM notes
               LEFT JOIN users ON notes.user_id = users.id
               WHERE notes.lead_id = $1
@@ -55,7 +55,7 @@ class NotesService {
 
   async deleteNotes(noteId, userId) {
     const query = {
-      text: 'DELETE FROM notes WHERE id = $1 AND user_id = $2 RETURING id',
+      text: 'DELETE FROM notes WHERE id = $1 AND user_id = $2 RETURNING id',
       values: [noteId, userId],
     };
 
