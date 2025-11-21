@@ -1,3 +1,17 @@
+const {
+  jobTranslation,
+  maritalTranslation,
+  educationTranslation,
+  contactTranslation,
+  monthTranslation,
+  daysTranslation,
+  poutcomeTranslation,
+  yesNoTranslation,
+  translateValue,
+  categoryTranslation,
+  statusTranslation,
+} = require('./translations');
+
 const usersToModel = ({
   id,
   username,
@@ -21,7 +35,6 @@ const usersToModel = ({
 });
 
 const leadsToModel = ({
-  // personal
   id,
   name,
   email,
@@ -42,57 +55,38 @@ const leadsToModel = ({
   pdays,
   previous,
   poutcome,
-
-  // economic indicator
-  emp_var_rate,
-  cons_price_idx,
-  cons_conf_idx,
-  euribor3m,
-  nr_employed,
   probability_score,
   prediction_result,
   category,
-
-  // portal
   status,
   assigned_to,
   last_contacted_at,
   created_at,
 }) => ({
-  // personal
   id,
   name,
   email,
   phone,
   age,
-  job,
-  marital,
-  education,
-  defaultCredit,
-  housing,
-  loan,
+  job: translateValue(job, jobTranslation),
+  marital: translateValue(marital, maritalTranslation),
+  education: translateValue(education, educationTranslation),
+  defaultCredit: translateValue(defaultCredit, yesNoTranslation),
+  housing: translateValue(housing, yesNoTranslation),
+  loan: translateValue(loan, yesNoTranslation),
   balance,
-  contact,
-  month,
-  dayOfWeek: day_of_week,
+  contact: translateValue(contact, contactTranslation),
+  month: translateValue(month, monthTranslation),
+  dayOfWeek: translateValue(day_of_week, daysTranslation),
   duration,
   campaign,
   pdays,
   previous,
-  poutcome,
-
-  // economic indicator
-  empVarRate: emp_var_rate,
-  consPriceIdx: cons_price_idx,
-  consConfIdx: cons_conf_idx,
-  euribor3m,
-  nrEmployed: nr_employed,
+  poutcome: translateValue(poutcome, poutcomeTranslation),
   probabilityScore: probability_score,
   predictionResult: prediction_result,
-  category,
-
-  // portal
-  status,
+  category: translateValue(category, categoryTranslation),
+  status: translateValue(status, statusTranslation),
   assignedTo: assigned_to,
   lastContactedAt: last_contacted_at,
   createdAt: created_at,
