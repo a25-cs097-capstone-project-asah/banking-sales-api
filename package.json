@@ -21,6 +21,7 @@
     "dotenv-flow": "^4.1.0",
     "express": "^5.1.0",
     "joi": "^18.0.1",
+    "json2csv": "^6.0.0-alpha.2",
     "jsonwebtoken": "^9.0.2",
     "nanoid": "^5.1.6",
     "node-pg-migrate": "^8.0.3",

@@ -7,6 +7,7 @@ const { leadsToModel } = require('../../utils/mapDBToModel');
 // Import error handling
 const InvariantError = require('../../exceptions/InvariantError');
 const NotFoundError = require('../../exceptions/NotFoundError');
+const leadsFilter = require('../../utils/leadsFilter');
 
 class LeadsService {
   constructor(pool) {
@@ -112,7 +113,6 @@ class LeadsService {
       'name',
     ];
     const allowOrder = ['DESC', 'ASC'];
-
     if (!allowSortBy.includes(sortBy)) {
       sortBy = 'probability_score';
     }
@@ -121,48 +121,7 @@ class LeadsService {
       order = 'DESC';
     }
 
-    const where = []; // Menampung string kondisi WHERE
-    const values = []; // Menampung parameterized query
-    let index = 1; // Index untuk PostgreSQL placeholder
-
-    // filter berdasarkan category
-    if (filters.category) {
-      where.push(`category = $${index++}`);
-      values.push(filters.category);
-    }
-
-    // filter berdasarkan status
-    if (filters.status) {
-      where.push(`status = $${index++}`);
-      values.push(filters.status);
-    }
-
-    // filter berdasarkan job
-    if (filters.job) {
-      where.push(`job = $${index++}`);
-      values.push(filters.job);
-    }
-
-    // filter berdasarkan minimum score
-    if (filters.minScore) {
-      where.push(`probability_score >= $${index++}`);
-      values.push(filters.minScore);
-    }
-
-    // filter berdasarkan maximum score
-    if (filters.maxScore) {
-      where.push(`probability_score <= $${index++}`);
-      values.push(filters.maxScore);
-    }
-
-    // filter berdasarkan pencarian
-    if (filters.search) {
-      where.push(`name ILIKE $${index}`);
-      values.push(`%${filters.search}%`);
-      index++;
-    }
-
-    const whereSql = where.length > 0 ? `WHERE ${where.join(' AND ')}` : '';
+    const { whereSql, values, index } = leadsFilter(filters);
     const startIndex = (page - 1) * limit;
 
     const countQuery = {
@@ -199,7 +158,8 @@ class LeadsService {
       text: `SELECT id, name, email, phone, age, 
                     job, marital, education, housing, loan, 
                     balance, contact, month, day_of_week, duration, 
-                    probability_score, prediction_result, category, status 
+                    probability_score, prediction_result, category, status,
+                    assigned_to, last_contacted_at, created_at
              FROM leads WHERE id = $1`,
       values: [id],
     };
@@ -210,6 +170,24 @@ class LeadsService {
     }
 
     return leadsToModel(result.rows[0]);
+  }
+
+  async exportLeads(filters) {
+    const { whereSql, values } = leadsFilter(filters);
+
+    const query = {
+      text: `SELECT id, name, email, phone, age, 
+                    job, marital, education, housing, loan, 
+                    balance, contact, month, day_of_week, duration, 
+                    probability_score, prediction_result, category, status,
+                    assigned_to, last_contacted_at, created_at
+              FROM leads ${whereSql}
+              ORDER BY probability_score DESC`,
+      values: [...values],
+    };
+
+    const result = await this._pool.query(query);
+    return result.rows;
   }
 }
 
