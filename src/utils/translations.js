@@ -1,11 +1,11 @@
 const jobTranslation = {
-  housemaid: 'Pengurus Rumah Tangga',
+  housemaid: 'Ibu Rumah Tangga',
   services: 'Pelayanan/Jasa',
   'admin.': 'Administrasi',
-  'blue-collar': 'Pekerja Lapangan',
+  'blue-collar': 'Buruh',
   technician: 'Teknisi',
   retired: 'Pensiunan',
-  management: 'Manajemen',
+  management: 'Manajer',
   unemployed: 'Tidak Bekerja',
   'self-employed': 'Wiraswasta',
   unknown: 'Tidak Diketahui',
@@ -28,55 +28,54 @@ const educationTranslation = {
 };
 
 const contactTranslation = {
-  telephone: 'telepon',
-  cellular: 'seluler',
-  unknown: 'tidak diketahui',
+  telephone: 'Telepon',
+  cellular: 'Seluler',
+  unknown: 'Tidak diketahui',
 };
 
 const monthTranslation = {
-  jan: 'januari',
-  feb: 'februari',
-  mar: 'maret',
-  apr: 'april',
-  may: 'mei',
-  jun: 'juni',
-  jul: 'juli',
-  aug: 'agustus',
-  sep: 'september',
-  oct: 'oktober',
-  nov: 'november',
-  dec: 'desember',
+  jan: 'Januari',
+  feb: 'Februari',
+  mar: 'Maret',
+  apr: 'April',
+  may: 'Mei',
+  jun: 'Juni',
+  jul: 'Juli',
+  aug: 'Agustus',
+  sep: 'September',
+  oct: 'Oktober',
+  nov: 'November',
+  dec: 'Desember',
 };
 
 const daysTranslation = {
-  mon: 'senin',
-  tue: 'selasa',
-  wed: 'rabu',
-  thu: 'kamis',
-  fri: 'jumat',
-  sat: 'sabtu',
-  sun: 'minggu',
+  mon: 'Senin',
+  tue: 'Selasa',
+  wed: 'Rabu',
+  thu: 'Kamis',
+  fri: 'Jumat',
+  sat: 'Sabtu',
+  sun: 'Minggu',
 };
 
 const poutcomeTranslation = {
-  success: 'sukses',
-  failure: 'gagal',
-  other: 'lainnya',
-  unknown: 'tidak diketahui',
+  success: 'Sukses',
+  failure: 'Gagal',
+  nonexistent: 'Belum pernah dihubungi',
 };
 
 const categoryTranslation = {
-  high: 'tinggi',
-  medium: 'menengah',
-  low: 'rendah',
+  high: 'Tinggi',
+  medium: 'Sedang',
+  low: 'Rendah',
 };
 
 const statusTranslation = {
-  new: 'baru',
-  contacted: 'dihubungi',
-  'follow-up': 'tindak lanjut',
-  converted: 'terkonversi',
-  rejected: 'ditolak',
+  new: 'Baru',
+  contacted: 'Dihubungi',
+  'follow-up': 'Tindak lanjut',
+  converted: 'Terkonversi',
+  rejected: 'Ditolak',
 };
 
 const yesNoTranslation = {
