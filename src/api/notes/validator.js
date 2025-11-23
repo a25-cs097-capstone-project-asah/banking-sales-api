@@ -6,9 +6,9 @@ const noteSchema = Joi.object({
 });
 
 const noteValidatePayload = (payload) => {
-  const { e } = noteSchema.validate(payload);
-  if (e) {
-    throw new InvariantError(e.message);
+  const { error } = noteSchema.validate(payload);
+  if (error) {
+    throw new InvariantError(error.message);
   }
 };
 

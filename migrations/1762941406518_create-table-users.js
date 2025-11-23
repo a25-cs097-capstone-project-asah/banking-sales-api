@@ -1,4 +1,8 @@
-export const up = (pgm) => {
+require('dotenv').config();
+const bcrypt = require('bcrypt');
+const { userPass } = require('../src/config/environment');
+
+const up = async (pgm) => {
   pgm.createTable('users', {
     id: {
       type: 'VARCHAR(30)',
@@ -33,12 +37,24 @@ export const up = (pgm) => {
       type: 'TIMESTAMP',
       notNull: true,
     },
-    last_login: {
-      type: 'TIMESTAMP',
-    },
   });
+
+  const password = userPass;
+  const hashedPassword = await bcrypt.hash(password, 10);
+  const createdAt = new Date().toISOString();
+
+  pgm.sql(
+    `INSERT INTO users(id, username, password, fullname, email, phone, role, created_at) VALUES 
+      ('user-c9m7k8t3', 'Driyan', '${hashedPassword}', 'Adriyan', 'adrian@email.com', '+62 851-2233-4455', 'sales', '${createdAt}'),
+      ('user-x1234abc', 'BunaTed', '${hashedPassword}', 'Buna Teddy', 'buna@teddy.com', '+62 812-0000-1111', 'sales', '${createdAt}')`
+  );
 };
 
-export const down = (pgm) => {
+const down = (pgm) => {
   pgm.dropTable('users');
+};
+
+module.exports = {
+  up,
+  down,
 };

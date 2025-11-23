@@ -15,6 +15,18 @@ const {
 const tokenManager = require('../../utils/tokenManager');
 const asyncHandler = require('../../utils/asyncHandler');
 
+/**
+ * @api {post} /authentications Login user
+ * @apiName Login
+ * @apiGroup Authentications
+ *
+ * @apiBody {String} username
+ * @apiBody {String} password
+ *
+ * @apiSuccess (201) {String} accessToken
+ * @apiSuccess (201) {String} refreshToken
+ */
+
 // Controller pada fitur login
 const postAuthenticationsController = asyncHandler(async (req, res) => {
   postValidatePayload(req.body);
@@ -36,6 +48,16 @@ const postAuthenticationsController = asyncHandler(async (req, res) => {
   });
 });
 
+/**
+ * @api {put} /authentications Refresh access token
+ * @apiName RefreshToken
+ * @apiGroup Authentications
+ *
+ * @apiBody {String} refreshToken
+ *
+ * @apiSuccess (200) {String} accessToken
+ */
+
 const putAuthenticationsController = asyncHandler(async (req, res) => {
   putValidatePayload(req.body);
   const { refreshToken } = req.body;
@@ -52,6 +74,16 @@ const putAuthenticationsController = asyncHandler(async (req, res) => {
     },
   });
 });
+
+/**
+ * @api {delete} /authentications Logout user
+ * @apiName Logout
+ * @apiGroup Authentications
+ *
+ * @apiBody {String} refreshToken
+ *
+ * @apiSuccess (200) {String} message
+ */
 
 // Controller pada fitur logout
 const deleteAuthenticationsController = asyncHandler(async (req, res) => {

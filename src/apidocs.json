@@ -1,0 +1,9 @@
+{
+  "name": "API Backend",
+  "version": "1.0.0",
+  "description": "Dokumentasi API",
+  "url": "http://localhost:5000",
+  "template": {
+    "withGenerator": false
+  }
+}

@@ -2,6 +2,18 @@ const { notesService } = require('../../services/postgre');
 const asyncHandler = require('../../utils/asyncHandler');
 const noteValidatePayload = require('./validator');
 
+/**
+ * @api {post} /leads/:leadId/notes Tambah catatan untuk lead
+ * @apiName AddNote
+ * @apiGroup Notes
+ *
+ * @apiParam {String} leadId
+ *
+ * @apiBody {String} body
+ *
+ * @apiSuccess (201) {String} noteId
+ */
+
 const postNotesController = asyncHandler(async (req, res) => {
   noteValidatePayload(req.body);
   const { leadId } = req.params;
@@ -18,6 +30,16 @@ const postNotesController = asyncHandler(async (req, res) => {
   });
 });
 
+/**
+ * @api {get} /leads/:leadId/notes Ambil semua catatan berdasarkan lead
+ * @apiName GetNotesByLead
+ * @apiGroup Notes
+ *
+ * @apiParam {String} leadId
+ *
+ * @apiSuccess (200) {Object[]} notes
+ */
+
 const getNotesByLeadIdController = asyncHandler(async (req, res) => {
   const { leadId } = req.params;
 
@@ -29,6 +51,18 @@ const getNotesByLeadIdController = asyncHandler(async (req, res) => {
     },
   });
 });
+
+/**
+ * @api {put} /notes/:noteId Update catatan
+ * @apiName UpdateNote
+ * @apiGroup Notes
+ *
+ * @apiParam {String} noteId
+ *
+ * @apiBody {String} body
+ *
+ * @apiSuccess (200) {String} message
+ */
 
 const putNoteByNoteIdController = asyncHandler(async (req, res) => {
   noteValidatePayload(req.body);
@@ -43,6 +77,16 @@ const putNoteByNoteIdController = asyncHandler(async (req, res) => {
     message: 'Catatan berhasil diperbarui',
   });
 });
+
+/**
+ * @api {delete} /notes/:noteId Hapus catatan
+ * @apiName DeleteNote
+ * @apiGroup Notes
+ *
+ * @apiParam {String} noteId
+ *
+ * @apiSuccess (200) {String} message
+ */
 
 const deleteNoteByNoteIdController = asyncHandler(async (req, res) => {
   const { noteId } = req.params;

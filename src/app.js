@@ -21,8 +21,10 @@ app.use(express.json());
 app.use('/authentications', authenticationRoutes);
 app.use('/users', usersRoutes);
 app.use('/leads', leadsRouter);
-app.use('/', dashboardRouter);
+app.use('/dashboard', dashboardRouter);
 app.use('/', notesRouter);
+
+// Health route
 app.use('/health', healthRouter);
 
 // errorHandler

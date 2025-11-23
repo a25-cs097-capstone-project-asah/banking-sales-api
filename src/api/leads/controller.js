@@ -1,20 +1,29 @@
+const { Parser } = require('json2csv');
+
 const asyncHandler = require('../../utils/asyncHandler');
-const { postValidatePayload } = require('./validator');
 
 const { leadsService } = require('../../services/postgre');
+const translatedLeads = require('../../utils/translatedLeads');
 
-const postLeadController = asyncHandler(async (req, res) => {
-  postValidatePayload(req.body);
-
-  const leadId = await leadsService.addLead(req.body);
-  res.status(201).json({
-    status: 'success',
-    message: 'Nasabah berhasil ditambahkan',
-    data: {
-      leadId,
-    },
-  });
-});
+/**
+ * @api {get} /leads Ambil semua leads
+ * @apiName GetAllLeads
+ * @apiGroup Leads
+ *
+ * @apiQuery {Number} page
+ * @apiQuery {Number} limit
+ * @apiQuery {String} sortBy
+ * @apiQuery {String} order
+ * @apiQuery {String} category
+ * @apiQuery {String} status
+ * @apiQuery {String} job
+ * @apiQuery {Number} minScore
+ * @apiQuery {Number} maxScore
+ * @apiQuery {String} search
+ *
+ * @apiSuccess (200) {Object[]} leads
+ * @apiSuccess (200) {Object} pagination
+ */
 
 const getAllLeadsController = asyncHandler(async (req, res) => {
   const {
@@ -53,6 +62,16 @@ const getAllLeadsController = asyncHandler(async (req, res) => {
   });
 });
 
+/**
+ * @api {get} /leads/:id Ambil detail lead
+ * @apiName GetLeadDetail
+ * @apiGroup Leads
+ *
+ * @apiParam {String} id ID Lead
+ *
+ * @apiSuccess (200) {Object} lead
+ */
+
 const getLeadDetailController = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const lead = await leadsService.getLeadsDetail(id);
@@ -64,8 +83,81 @@ const getLeadDetailController = asyncHandler(async (req, res) => {
   });
 });
 
+/**
+ * @api {get} /leads/exports Export semua leads ke CSV
+ * @apiName ExportLeads
+ * @apiGroup Leads
+ *
+ * @apiQuery {String} category
+ * @apiQuery {String} status
+ * @apiQuery {String} job
+ * @apiQuery {Number} minScore
+ * @apiQuery {Number} maxScore
+ * @apiQuery {String} search
+ *
+ * @apiSuccess (200) {File} CSV
+ */
+
+const exportLeadsController = asyncHandler(async (req, res) => {
+  const { category, status, job, minScore, maxScore, search } = req.query;
+
+  const leads = await leadsService.exportLeads({
+    filters: {
+      category,
+      status,
+      job,
+      minScore: minScore ? parseFloat(minScore) : undefined,
+      maxScore: maxScore ? parseFloat(maxScore) : undefined,
+      search,
+    },
+  });
+
+  const data = leads.map(translatedLeads);
+  const fields = [
+    'ID Lead',
+    'Nama',
+    'Email',
+    'Telepon',
+    'Usia',
+    'Pekerjaan',
+    'Status Pernikahan',
+    'Pendidikan',
+    'Kredit',
+    'Kepemilikan Rumah',
+    'Pinjaman',
+    'Saldo',
+    'Metode Kontak',
+    'Bulan',
+    'Hari',
+    'Durasi (detik)',
+    'Kampanye',
+    'Selang hari',
+    'Kontak Sebelumnya',
+    'Hasil kampanye',
+    'Variasi pekerjaan',
+    'Indeks Harga',
+    'Indeks Kepercayaan',
+    'Euribor 3 Bulan',
+    'Jumlah Karyawan',
+    'Skor Probabilitas (%)',
+    'Hasil Prediksi',
+    'Kategori',
+    'Status',
+    'Ditugaskan Kepada',
+    'Terakhir Dihubungi',
+    'Dibuat pada',
+  ];
+
+  const parser = new Parser({ fields, delimiter: ';' });
+  const csv = parser.parse(data);
+
+  res.setHeader('Content-Type', 'text/csv');
+  res.setHeader('Content-Disposition', 'attachment; filename=leads-export.csv');
+  res.status(200).send(csv);
+});
+
 module.exports = {
-  postLeadController,
   getAllLeadsController,
   getLeadDetailController,
+  exportLeadsController,
 };

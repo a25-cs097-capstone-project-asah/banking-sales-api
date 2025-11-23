@@ -15,23 +15,23 @@ const deleteAuthenticationSchema = Joi.object({
 });
 
 const postValidatePayload = (payload) => {
-  const { e } = postAuthenticationSchema.validate(payload);
-  if (e) {
-    throw new InvariantError(e.message);
+  const { error } = postAuthenticationSchema.validate(payload);
+  if (error) {
+    throw new InvariantError(error.message);
   }
 };
 
 const putValidatePayload = (payload) => {
-  const { e } = putAuthenticationSchema.validate(payload);
-  if (e) {
-    throw new InvariantError(e.message);
+  const { error } = putAuthenticationSchema.validate(payload);
+  if (error) {
+    throw new InvariantError(error.message);
   }
 };
 
 const deleteValidatePayload = (payload) => {
-  const { e } = deleteAuthenticationSchema.validate(payload);
-  if (e) {
-    throw new InvariantError(e.message);
+  const { error } = deleteAuthenticationSchema.validate(payload);
+  if (error) {
+    throw new InvariantError(error.message);
   }
 };
 
