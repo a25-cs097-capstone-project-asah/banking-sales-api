@@ -114,21 +114,6 @@ const getPriorityLeadsController = asyncHandler(async (req, res) => {
 });
 
 /**
- * @api {get} /leads/exports Export semua leads ke CSV
- * @apiName ExportLeads
- * @apiGroup Leads
- *
- * @apiQuery {String} category
- * @apiQuery {String} status
- * @apiQuery {String} job
- * @apiQuery {Number} minScore
- * @apiQuery {Number} maxScore
- * @apiQuery {String} search
- *
- * @apiSuccess (200) {File} CSV
- */
-
-/**
  * @api {put} /leads/:id/Perbarui status lead berdasarkan id
  * @apiName PutLeadStatus
  * @apiGroup Leads
@@ -152,6 +137,21 @@ const putLeadStatusByIdController = asyncHandler(async (req, res) => {
     message: 'Status Leads berhasil diperbarui',
   });
 });
+
+/**
+ * @api {get} /leads/exports Export semua leads ke CSV
+ * @apiName ExportLeads
+ * @apiGroup Leads
+ *
+ * @apiQuery {String} category
+ * @apiQuery {String} status
+ * @apiQuery {String} job
+ * @apiQuery {Number} minScore
+ * @apiQuery {Number} maxScore
+ * @apiQuery {String} search
+ *
+ * @apiSuccess (200) {File} CSV
+ */
 
 const exportLeadsController = asyncHandler(async (req, res) => {
   const { category, status, job, minScore, maxScore, search } = req.query;
