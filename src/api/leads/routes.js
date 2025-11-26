@@ -7,6 +7,7 @@ const controller = require('./controller');
 
 router.get('/', auth, controller.getAllLeadsController);
 router.get('/exports', controller.exportLeadsController);
+router.get('/priority-leads', auth, controller.getPriorityLeads);
 router.get('/:id', auth, controller.getLeadDetailController);
 
 module.exports = router;

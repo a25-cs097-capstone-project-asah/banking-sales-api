@@ -1,5 +1,4 @@
 const {
-  leadsToModel,
   distributionStatsToModel,
   convertionTrendToModel,
 } = require('../../utils/mapDBToModel');
@@ -87,54 +86,6 @@ class DashboardService {
     );
 
     return result.rows.map(distributionStatsToModel);
-  }
-
-  // Menampilkan leads prioritas
-  async getPriorityLeads({ page, limit }) {
-    const offset = (page - 1) * limit;
-
-    const baseFilter = `
-      category = 'high'
-      AND status NOT IN ('converted', 'rejected')
-    `;
-
-    const dataQuery = {
-      text: `
-        SELECT id, name, email, age, job, probability_score, category, status
-        FROM leads
-        WHERE ${baseFilter}
-        ORDER BY probability_score DESC
-        LIMIT $1 OFFSET $2
-      `,
-      values: [limit, offset],
-    };
-
-    const countQuery = {
-      text: `
-        SELECT COUNT(*) AS total
-        FROM leads
-        WHERE ${baseFilter}
-      `,
-    };
-
-    const [dataResult, countResult] = await Promise.all([
-      this._pool.query(dataQuery),
-      this._pool.query(countQuery),
-    ]);
-
-    const leads = dataResult.rows.map(leadsToModel);
-    const total = parseInt(countResult.rows[0].total, 10) || 0;
-    const totalPages = Math.max(Math.ceil(total / limit), 1);
-
-    return {
-      leads,
-      pagination: {
-        page,
-        limit,
-        total,
-        totalPages,
-      },
-    };
   }
 }
 

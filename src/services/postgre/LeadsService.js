@@ -1,9 +1,10 @@
 // Import utils
 const { leadsToModel } = require('../../utils/mapDBToModel');
+const leadsFilter = require('../../utils/leadsFilter');
+const { verifySortOrder } = require('../../utils/getLeadsUtils');
 
 // Import error handling
 const NotFoundError = require('../../exceptions/NotFoundError');
-const leadsFilter = require('../../utils/leadsFilter');
 
 class LeadsService {
   constructor(pool) {
@@ -13,44 +14,37 @@ class LeadsService {
   // Fitur menampilkan seluruh lead/calon nasabah
   // sebanyak 10 nasabah per page.
   async getAllLeads({ page, limit, sortBy, order, filters }) {
-    const allowSortBy = [
-      'probability_score',
-      'category',
-      'status',
-      'job',
-      'name',
-    ];
-    const allowOrder = ['DESC', 'ASC'];
-    if (!allowSortBy.includes(sortBy)) {
-      sortBy = 'probability_score';
-    }
+    const { sortBy: validatedSort, order: validatedOrder } = verifySortOrder(
+      sortBy,
+      order
+    );
 
-    if (!allowOrder.includes(order)) {
-      order = 'DESC';
-    }
-
-    const { whereSql, values, index } = leadsFilter(filters);
     const startIndex = (page - 1) * limit;
+    const { whereSql, values, index } = leadsFilter(filters);
+
+    const query = {
+      text: `SELECT id, name, email, age, job, probability_score, category, status  
+              FROM leads ${whereSql}
+              ORDER BY ${validatedSort} ${validatedOrder}
+              LIMIT $${index} OFFSET $${index + 1}`,
+      values: [...values, limit, startIndex],
+    };
 
     const countQuery = {
       text: `SELECT COUNT(*) AS total_leads FROM leads ${whereSql}`,
       values: values,
     };
 
-    const countResult = await this._pool.query(countQuery);
+    const [result, countResult] = await Promise.all([
+      this._pool.query(query),
+      this._pool.query(countQuery),
+    ]);
+
+    const leads = result.rows.map(leadsToModel);
     const totalLeads = parseInt(countResult.rows[0].total_leads);
 
-    const query = {
-      text: `SELECT id, name, email, age, job, probability_score, category, status  
-              FROM leads ${whereSql}
-              ORDER BY ${sortBy} ${order}
-              LIMIT $${index} OFFSET $${index + 1}`,
-      values: [...values, limit, startIndex],
-    };
-
-    const result = await this._pool.query(query);
     return {
-      leads: result.rows.map(leadsToModel),
+      leads,
       pagination: {
         page,
         limit,
@@ -80,6 +74,58 @@ class LeadsService {
     return leadsToModel(result.rows[0]);
   }
 
+  // Menampilkan daftar leads prioritas
+  async getPriorityLeads({ page, limit, sortBy, order }) {
+    const { sortBy: validatedSort, order: validatedOrder } = verifySortOrder(
+      sortBy,
+      order
+    );
+
+    const startIndex = (page - 1) * limit;
+    const baseFilter = `
+      category = 'high'
+      AND status NOT IN ('converted', 'rejected')
+    `;
+
+    const query = {
+      text: `
+        SELECT id, name, email, age, job, probability_score, category, status
+        FROM leads
+        WHERE ${baseFilter}
+        ORDER BY ${validatedSort} ${validatedOrder}
+        LIMIT $1 OFFSET $2
+      `,
+      values: [limit, startIndex],
+    };
+
+    const countQuery = {
+      text: `
+        SELECT COUNT(*) AS total_leads
+        FROM leads
+        WHERE ${baseFilter}
+      `,
+    };
+
+    const [result, countResult] = await Promise.all([
+      this._pool.query(query),
+      this._pool.query(countQuery),
+    ]);
+
+    const leads = result.rows.map(leadsToModel);
+    const totalLeads = parseInt(countResult.rows[0].total_leads) || 0;
+
+    return {
+      leads,
+      pagination: {
+        page,
+        limit,
+        totalLeads,
+        totalPages: Math.ceil(totalLeads / limit),
+      },
+    };
+  }
+
+  // Export daftar leads dalam format CSV
   async exportLeads(filters) {
     const { whereSql, values } = leadsFilter(filters);
 

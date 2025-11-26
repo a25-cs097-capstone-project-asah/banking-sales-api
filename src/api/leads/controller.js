@@ -3,7 +3,7 @@ const { Parser } = require('json2csv');
 const asyncHandler = require('../../utils/asyncHandler');
 
 const { leadsService } = require('../../services/postgre');
-const translatedLeads = require('../../utils/translatedLeads');
+const { translatedLeads, leadFields } = require('../../utils/getLeadsUtils');
 
 /**
  * @api {get} /leads Ambil semua leads
@@ -84,6 +84,37 @@ const getLeadDetailController = asyncHandler(async (req, res) => {
 });
 
 /**
+ * @api {get} /leads/priority-leads Ambil leads dengan prioritas tinggi
+ * @apiName GetPriorityLeads
+ * @apiGroup leads
+ *
+ * @apiQuery {Number} page Halaman data
+ * @apiQuery {Number} limit Batas jumlah data (default: 10)
+ *
+ * @apiSuccess (200) {Object[]} leads
+ * @apiSuccess (200) {Object} pagination
+ */
+
+const getPriorityLeads = asyncHandler(async (req, res) => {
+  const { page, limit, sortBy, order } = req.query;
+
+  const result = await leadsService.getPriorityLeads({
+    page: parseInt(page) || 1,
+    limit: parseInt(limit) || 10,
+    sortBy: sortBy || 'probability_score',
+    order: order || 'DESC',
+  });
+
+  res.status(200).json({
+    status: 'success',
+    data: {
+      leads: result.leads,
+      pagination: result.pagination,
+    },
+  });
+});
+
+/**
  * @api {get} /leads/exports Export semua leads ke CSV
  * @apiName ExportLeads
  * @apiGroup Leads
@@ -113,40 +144,7 @@ const exportLeadsController = asyncHandler(async (req, res) => {
   });
 
   const data = leads.map(translatedLeads);
-  const fields = [
-    'ID Lead',
-    'Nama',
-    'Email',
-    'Lokasi',
-    'Telepon',
-    'Usia',
-    'Pekerjaan',
-    'Status Pernikahan',
-    'Pendidikan',
-    'Kredit',
-    'Kepemilikan Rumah',
-    'Pinjaman',
-    'Saldo',
-    'Metode Kontak',
-    'Bulan',
-    'Hari',
-    'Durasi (detik)',
-    'Kampanye',
-    'Selang hari',
-    'Kontak Sebelumnya',
-    'Hasil kampanye',
-    'Variasi pekerjaan',
-    'Indeks Harga',
-    'Indeks Kepercayaan',
-    'Euribor 3 Bulan',
-    'Jumlah Karyawan',
-    'Skor Probabilitas (%)',
-    'Hasil Prediksi',
-    'Kategori',
-    'Status',
-    'Terakhir Dihubungi',
-    'Dibuat pada',
-  ];
+  const fields = leadFields;
 
   const parser = new Parser({ fields, delimiter: ';' });
   const csv = parser.parse(data);
@@ -159,5 +157,6 @@ const exportLeadsController = asyncHandler(async (req, res) => {
 module.exports = {
   getAllLeadsController,
   getLeadDetailController,
+  getPriorityLeads,
   exportLeadsController,
 };
