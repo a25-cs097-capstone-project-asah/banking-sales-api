@@ -2,9 +2,9 @@
   "name": "backend",
   "version": "1.0.0",
   "description": "RESTful API untuk portal banking sales web.",
-  "main": "server.js",
+  "main": "server",
   "scripts": {
-    "start": "cross-env NODE_ENV=production node server",
+    "start": "NODE_ENV=production node server",
     "dev": "nodemon server",
     "migrate": "node-pg-migrate",
     "psql": "psql postgres://dryann:driann--12@localhost:5432/banking_sales_db",
