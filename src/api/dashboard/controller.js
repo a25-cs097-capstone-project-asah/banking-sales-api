@@ -47,31 +47,7 @@ const getChartController = asyncHandler(async (req, res) => {
   });
 });
 
-/**
- * @api {get} /dashboard/priority-leads Ambil leads dengan prioritas tinggi
- * @apiName GetPriorityLeads
- * @apiGroup Dashboard
- *
- * @apiQuery {Number} limit Batas jumlah data (default: 10)
- *
- * @apiSuccess (200) {Object[]} leads
- */
-
-const getPriorityLeads = asyncHandler(async (req, res) => {
-  const { limit } = req.query;
-
-  const leads = await dashboardService.getPriorityLeads(parseInt(limit) || 10);
-
-  res.status(200).json({
-    status: 'success',
-    data: {
-      leads,
-    },
-  });
-});
-
 module.exports = {
   getStatsController,
   getChartController,
-  getPriorityLeads,
 };

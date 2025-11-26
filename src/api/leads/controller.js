@@ -1,9 +1,8 @@
 const { Parser } = require('json2csv');
-
 const asyncHandler = require('../../utils/asyncHandler');
-
 const { leadsService } = require('../../services/postgre');
-const translatedLeads = require('../../utils/translatedLeads');
+const { translatedLeads, leadFields } = require('../../utils/getLeadsHelper');
+const putLeadStatusValidator = require('./validator');
 
 /**
  * @api {get} /leads Ambil semua leads
@@ -84,6 +83,37 @@ const getLeadDetailController = asyncHandler(async (req, res) => {
 });
 
 /**
+ * @api {get} /leads/priority-leads Ambil leads dengan prioritas tinggi
+ * @apiName GetPriorityLeads
+ * @apiGroup leads
+ *
+ * @apiQuery {Number} page Halaman data
+ * @apiQuery {Number} limit Batas jumlah data (default: 10)
+ *
+ * @apiSuccess (200) {Object[]} leads
+ * @apiSuccess (200) {Object} pagination
+ */
+
+const getPriorityLeadsController = asyncHandler(async (req, res) => {
+  const { page, limit, sortBy, order } = req.query;
+
+  const result = await leadsService.getPriorityLeads({
+    page: parseInt(page) || 1,
+    limit: parseInt(limit) || 10,
+    sortBy: sortBy || 'probability_score',
+    order: order || 'DESC',
+  });
+
+  res.status(200).json({
+    status: 'success',
+    data: {
+      leads: result.leads,
+      pagination: result.pagination,
+    },
+  });
+});
+
+/**
  * @api {get} /leads/exports Export semua leads ke CSV
  * @apiName ExportLeads
  * @apiGroup Leads
@@ -97,6 +127,31 @@ const getLeadDetailController = asyncHandler(async (req, res) => {
  *
  * @apiSuccess (200) {File} CSV
  */
+
+/**
+ * @api {put} /leads/:id/Perbarui status lead berdasarkan id
+ * @apiName PutLeadStatus
+ * @apiGroup Leads
+ *
+ * @apiParam {String} id Lead ID
+ *
+ * @apiBody {String} status (new, contacted, follow-up, converted, rejected)
+ *
+ * @apiSuccess (200) {String} message
+ */
+
+const putLeadStatusByIdController = asyncHandler(async (req, res) => {
+  putLeadStatusValidator(req.body);
+  const { id } = req.params;
+  const { status } = req.body;
+
+  await leadsService.updateLeadStatusById(id, status);
+
+  res.status(200).json({
+    status: 'success',
+    message: 'Status Leads berhasil diperbarui',
+  });
+});
 
 const exportLeadsController = asyncHandler(async (req, res) => {
   const { category, status, job, minScore, maxScore, search } = req.query;
@@ -113,40 +168,7 @@ const exportLeadsController = asyncHandler(async (req, res) => {
   });
 
   const data = leads.map(translatedLeads);
-  const fields = [
-    'ID Lead',
-    'Nama',
-    'Email',
-    'Telepon',
-    'Usia',
-    'Pekerjaan',
-    'Status Pernikahan',
-    'Pendidikan',
-    'Kredit',
-    'Kepemilikan Rumah',
-    'Pinjaman',
-    'Saldo',
-    'Metode Kontak',
-    'Bulan',
-    'Hari',
-    'Durasi (detik)',
-    'Kampanye',
-    'Selang hari',
-    'Kontak Sebelumnya',
-    'Hasil kampanye',
-    'Variasi pekerjaan',
-    'Indeks Harga',
-    'Indeks Kepercayaan',
-    'Euribor 3 Bulan',
-    'Jumlah Karyawan',
-    'Skor Probabilitas (%)',
-    'Hasil Prediksi',
-    'Kategori',
-    'Status',
-    'Ditugaskan Kepada',
-    'Terakhir Dihubungi',
-    'Dibuat pada',
-  ];
+  const fields = leadFields;
 
   const parser = new Parser({ fields, delimiter: ';' });
   const csv = parser.parse(data);
@@ -159,5 +181,7 @@ const exportLeadsController = asyncHandler(async (req, res) => {
 module.exports = {
   getAllLeadsController,
   getLeadDetailController,
+  getPriorityLeadsController,
+  putLeadStatusByIdController,
   exportLeadsController,
 };

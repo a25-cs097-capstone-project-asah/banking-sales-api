@@ -1,3 +1,4 @@
+const InvariantError = require('../exceptions/InvariantError');
 const {
   jobTranslation,
   maritalTranslation,
@@ -11,6 +12,80 @@ const {
   categoryTranslation,
   statusTranslation,
 } = require('./translations');
+
+const verifySortOrder = (sortBy, order) => {
+  const validSortBy = [
+    'probability_score',
+    'category',
+    'status',
+    'job',
+    'name',
+  ];
+  const validOrder = ['DESC', 'ASC'];
+  return {
+    sortBy: validSortBy.includes(sortBy) ? sortBy : 'probability_score',
+    order: validOrder.includes(order) ? order : 'DESC',
+  };
+};
+
+const verifyStatus = (status) => {
+  const validStatuses = [
+    'new',
+    'contacted',
+    'follow-up',
+    'converted',
+    'rejected',
+  ];
+  if (!validStatuses.includes(status)) {
+    throw new InvariantError(
+      `Invalid status. Must be one of: ${validStatuses.join(', ')}`
+    );
+  }
+
+  return {
+    status,
+    lastContactedAt: ['new', 'contacted', 'follow-up', 'converted'].includes(
+      status
+    )
+      ? new Date().toISOString()
+      : null,
+  };
+};
+
+const leadFields = [
+  'ID Lead',
+  'Nama',
+  'Email',
+  'Lokasi',
+  'Telepon',
+  'Usia',
+  'Pekerjaan',
+  'Status Pernikahan',
+  'Pendidikan',
+  'Kredit',
+  'Kepemilikan Rumah',
+  'Pinjaman',
+  'Saldo',
+  'Metode Kontak',
+  'Bulan',
+  'Hari',
+  'Durasi (detik)',
+  'Kampanye',
+  'Selang hari',
+  'Kontak Sebelumnya',
+  'Hasil kampanye',
+  'Variasi pekerjaan',
+  'Indeks Harga',
+  'Indeks Kepercayaan',
+  'Euribor 3 Bulan',
+  'Jumlah Karyawan',
+  'Skor Probabilitas (%)',
+  'Hasil Prediksi',
+  'Kategori',
+  'Status',
+  'Terakhir Dihubungi',
+  'Dibuat pada',
+];
 
 const translatedLeads = (lead) => ({
   'ID Lead': lead.id,
@@ -47,4 +122,4 @@ const translatedLeads = (lead) => ({
   'Dibuat pada': lead.created_at,
 });
 
-module.exports = translatedLeads;
+module.exports = { verifySortOrder, verifyStatus, leadFields, translatedLeads };

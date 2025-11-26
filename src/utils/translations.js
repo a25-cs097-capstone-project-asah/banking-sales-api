@@ -74,7 +74,7 @@ const categoryTranslation = {
 const statusTranslation = {
   new: 'Baru',
   contacted: 'Dihubungi',
-  'follow-up': 'Tindak lanjut',
+  'follow-up': 'Follow-up',
   converted: 'Terkonversi',
   rejected: 'Ditolak',
 };

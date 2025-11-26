@@ -1,5 +1,4 @@
 const {
-  listLeadToModel,
   distributionStatsToModel,
   convertionTrendToModel,
 } = require('../../utils/mapDBToModel');
@@ -35,13 +34,13 @@ class DashboardService {
       this._pool.query(query.averageScore),
     ]);
 
-    const totalLeads = parseInt(totalLeadsResult.rows[0].total_leads);
-    const convertedLeads = parseInt(convertedLeadsResult.rows[0].total_leads);
-    const highPriorityLeads = parseInt(
-      highPriorityLeadsResult.rows[0].total_leads
-    );
+    const totalLeads = parseInt(totalLeadsResult.rows[0]?.total_leads) || 0;
+    const convertedLeads =
+      parseInt(convertedLeadsResult.rows[0]?.total_leads) || 0;
+    const highPriorityLeads =
+      parseInt(highPriorityLeadsResult.rows[0]?.total_leads) || 0;
     const convertionRate =
-      totalLeads > 0 ? (convertedLeads / totalLeads) * 100 : 0;
+      totalLeads > 0 ? ((convertedLeads / totalLeads) * 100).toFixed(2) : 0;
     const averageScore = parseFloat(averageScoreResult.rows[0].average || 0);
 
     return {
@@ -87,20 +86,6 @@ class DashboardService {
     );
 
     return result.rows.map(distributionStatsToModel);
-  }
-
-  // Menampilkan leads prioritas
-  async getPriorityLeads(limit) {
-    const query = {
-      text: `SELECT * FROM leads
-              WHERE category = 'high' AND status NOT IN ('converted', 'rejected')
-              ORDER BY probability_score DESC
-            limit $1`,
-      values: [limit],
-    };
-
-    const result = await this._pool.query(query);
-    return result.rows.map(listLeadToModel);
   }
 }
 

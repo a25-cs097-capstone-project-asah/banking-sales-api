@@ -5,10 +5,11 @@
   "main": "server.js",
   "scripts": {
     "start": "cross-env NODE_ENV=production node server",
-    "dev": "cross-env NODE_ENV=development nodemon server",
-    "migrate": "cross-env NODE_ENV=development node-pg-migrate",
+    "dev": "nodemon server",
+    "migrate": "node-pg-migrate",
     "psql": "psql postgres://dryann:driann--12@localhost:5432/banking_sales_db",
-    "apidoc": "npx apidoc -i src -o apidoc"
+    "apidoc": "npx apidoc -i src -o apidoc",
+    "import": "node ./src/services/external/importMLAPI"
   },
   "keywords": [
     "RESTful API",
@@ -22,7 +23,6 @@
     "bcrypt": "^6.0.0",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
-    "dotenv-flow": "^4.1.0",
     "express": "^5.1.0",
     "joi": "^18.0.1",
     "json2csv": "^6.0.0-alpha.2",

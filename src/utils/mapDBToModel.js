@@ -38,6 +38,7 @@ const leadsToModel = ({
   id,
   name,
   email,
+  locate,
   phone,
   age,
   job,
@@ -66,6 +67,7 @@ const leadsToModel = ({
   id,
   name,
   email,
+  locate,
   phone,
   age,
   job: translateValue(job, jobTranslation),
@@ -93,11 +95,11 @@ const leadsToModel = ({
 
 const convertionTrendToModel = (leads) => ({
   date: leads.date.toISOString().split('T')[0],
-  totalLeads: parseInt(leads.total_leads),
-  converted: parseInt(leads.converted),
+  totalLeads: parseInt(leads.total_leads) || 0,
+  converted: parseInt(leads.converted) || 0,
   convertionRate:
     leads.total_leads > 0
-      ? parseFloat((leads.converted / leads.total_leads) * 100)
+      ? parseFloat(((leads.converted / leads.total_leads) * 100).toFixed(2))
       : 0,
 });
 
