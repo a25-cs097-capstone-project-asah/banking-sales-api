@@ -1,5 +1,7 @@
+require('dotenv').config();
 const bcrypt = require('bcrypt');
 const { usersToModel } = require('../../utils/mapDBToModel');
+const { userPass } = require('../../config/environment');
 
 // Error handling
 const InvariantError = require('../../exceptions/InvariantError');
@@ -9,6 +11,48 @@ const AuthenticationsError = require('../../exceptions/AuthenticationError');
 class UsersService {
   constructor(pool) {
     this._pool = pool;
+  }
+
+  async generateUsers() {
+    const users = [
+      {
+        id: 'user-c9m7k8t3',
+        username: 'Driyan',
+        fullname: 'Adriyan',
+        email: 'adrian@email.com',
+        phone: '+62 851-2233-4455',
+        role: 'sales',
+      },
+      {
+        id: 'user-x1234abc',
+        username: 'BunaTed',
+        fullname: 'Buna Teddy',
+        email: 'buna@teddy.com',
+        phone: '+62 812-0000-1111',
+        role: 'sales',
+      },
+    ];
+
+    const password = userPass;
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const createdAt = new Date().toISOString();
+
+    for (const user of users) {
+      await this._pool.query(
+        `INSERT INTO users(id, username, password, fullname, email, phone, role, created_at) 
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
+        [
+          user.id,
+          user.username,
+          hashedPassword,
+          user.fullname,
+          user.email,
+          user.phone,
+          user.role,
+          createdAt,
+        ]
+      );
+    }
   }
 
   async getUsers() {
