@@ -9,7 +9,8 @@
     "migrate": "node-pg-migrate",
     "psql": "psql postgres://dryann:driann--12@localhost:5432/banking_sales_db",
     "apidoc": "npx apidoc -i src -o apidoc",
-    "import": "node ./src/services/external/importMLAPI"
+    "import": "node ./src/services/external/importMLAPI",
+    "seed": "node ./src/utils/seedUsers"
   },
   "keywords": [
     "RESTful API",
@@ -24,6 +25,7 @@
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
+    "express-rate-limit": "^8.2.1",
     "joi": "^18.0.1",
     "json2csv": "^6.0.0-alpha.2",
     "jsonwebtoken": "^9.0.2",

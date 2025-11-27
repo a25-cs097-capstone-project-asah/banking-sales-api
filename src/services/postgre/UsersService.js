@@ -25,9 +25,9 @@ class UsersService {
       },
       {
         id: 'user-x1234abc',
-        username: 'BunaTed',
-        fullname: 'Buna Teddy',
-        email: 'buna@teddy.com',
+        username: 'AsepSmoke',
+        fullname: 'Asep Smoke',
+        email: 'aseps.moke@email.com',
         phone: '+62 812-0000-1111',
         role: 'sales',
       },
