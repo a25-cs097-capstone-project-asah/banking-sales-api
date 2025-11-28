@@ -10,48 +10,37 @@ class DashboardService {
 
   // Fitur menampilkan statistik pada dashboard
   async getStats() {
-    const query = {
-      /* eslint-disable */
-      totalLeads: 'SELECT COUNT(*) AS total_leads FROM leads',
-      convertedLeads:
-        "SELECT COUNT(*) AS total_leads FROM leads WHERE status = 'converted'",
-      highPriorityLeads:
-        "SELECT COUNT(*) AS total_leads FROM leads WHERE category = 'high'",
-      averageScore:
-        'SELECT ROUND(AVG(probability_score)::numeric, 2) AS average FROM leads',
-      /* eslint-enable */
-    };
+    const query = `SELECT COUNT(*) AS total_leads,
+                        COUNT(*) FILTER (WHERE status = 'converted') AS converted_leads,
+                        COUNT(*) FILTER (WHERE category = 'high') AS high_priority_leads,
+                        ROUND(AVG(probability_score)::numeric, 2) AS average_score,
+                        COUNT(*) FILTER (WHERE status = 'follow-up') AS follow_up_leads
+                FROM leads`;
 
-    const [
-      totalLeadsResult,
-      convertedLeadsResult,
-      highPriorityLeadsResult,
-      averageScoreResult,
-    ] = await Promise.all([
-      this._pool.query(query.totalLeads),
-      this._pool.query(query.convertedLeads),
-      this._pool.query(query.highPriorityLeads),
-      this._pool.query(query.averageScore),
-    ]);
+    const res = await this._pool.query(query);
+    const row = res.rows[0];
 
-    const totalLeads = parseInt(totalLeadsResult.rows[0]?.total_leads) || 0;
-    const convertedLeads =
-      parseInt(convertedLeadsResult.rows[0]?.total_leads) || 0;
-    const highPriorityLeads =
-      parseInt(highPriorityLeadsResult.rows[0]?.total_leads) || 0;
-    const convertionRate =
-      totalLeads > 0 ? ((convertedLeads / totalLeads) * 100).toFixed(2) : 0;
-    const averageScore = parseFloat(averageScoreResult.rows[0].average || 0);
+    const totalLeads = parseInt(row.total_leads);
+    const convertedLeads = parseInt(row.converted_leads);
+    const highPriorityLeads = parseInt(row.high_priority_leads);
+    const conversionRate =
+      totalLeads > 0
+        ? parseFloat(((convertedLeads / totalLeads) * 100).toFixed(2))
+        : 0;
+    const averageScore = parseFloat(row.average_score);
+    const followUpLeads = parseInt(row.follow_up_leads);
 
     return {
       totalLeads,
       convertedLeads,
       highPriorityLeads,
-      convertionRate: parseFloat(convertionRate),
+      conversionRate,
       averageScore,
+      followUpLeads,
     };
   }
 
+  // Menampilkan data trend konversi dalam kurun 7 hari terakhir
   async getConvertionTrend(days = 7) {
     const result = await this._pool.query(
       `WITH date_series AS(

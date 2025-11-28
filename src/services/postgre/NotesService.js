@@ -62,7 +62,7 @@ class NotesService {
     return result.rows.map(notesToModel);
   }
 
-  async editNoteByNoteId(noteId, { body }) {
+  async editNoteByNoteId(noteId, leadId, userId, { body }) {
     const query = {
       text: 'UPDATE notes SET body = $1 WHERE id = $2 RETURNING id',
       values: [body, noteId],
@@ -81,7 +81,7 @@ class NotesService {
     );
   }
 
-  async deleteNoteByNoteId(noteId) {
+  async deleteNoteByNoteId(noteId, leadId, userId) {
     const query = {
       text: 'DELETE FROM notes WHERE id = $1 RETURNING id',
       values: [noteId],
@@ -110,6 +110,8 @@ class NotesService {
     if (!result.rows.length) {
       throw new AuthorizationError('Anda tidak berhak mengakses resource ini');
     }
+
+    return result.rows[0];
   }
 }
 
