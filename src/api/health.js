@@ -5,7 +5,7 @@ const health = router.get('/', (req, res) => {
   res.json({
     status: 'OK',
     message: 'Server sedang berjalan',
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' }),
   });
 });
 
