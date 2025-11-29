@@ -1,5 +1,6 @@
 const Jwt = require('jsonwebtoken');
 const InvariantError = require('../exceptions/InvariantError');
+const AuthenticationError = require('../exceptions/AuthenticationError');
 
 const tokenManager = {
   generateAccessToken: (payload) => {
@@ -18,7 +19,7 @@ const tokenManager = {
     } catch (e) {
       // Throw specific errors based on JWT error type
       if (e.name === 'TokenExpiredError') {
-        throw new InvariantError('Token telah kadaluarsa');
+        throw new AuthenticationError('Token telah kadaluarsa');
       } else if (e.name === 'JsonWebTokenError') {
         throw new InvariantError('Token tidak valid');
       } else {
