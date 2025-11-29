@@ -102,16 +102,21 @@ class NotesService {
 
   async verifyNoteAccess(noteId, userId) {
     const query = {
-      text: 'SELECT * FROM notes WHERE id = $1 AND user_id = $2',
-      values: [noteId, userId],
+      text: 'SELECT * FROM notes WHERE id = $1',
+      values: [noteId],
     };
 
     const result = await this._pool.query(query);
     if (!result.rows.length) {
+      throw new NotFoundError('Catatan tidak ditemukan');
+    }
+
+    const note = result.rows[0];
+    if (note.user_id !== userId) {
       throw new AuthorizationError('Anda tidak berhak mengakses resource ini');
     }
 
-    return result.rows[0];
+    return note;
   }
 }
 
