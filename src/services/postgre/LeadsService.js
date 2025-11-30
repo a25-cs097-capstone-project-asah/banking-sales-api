@@ -5,10 +5,13 @@ const { verifySortOrder, verifyStatus } = require('../../utils/getLeadsHelper');
 
 // Import error handling
 const NotFoundError = require('../../exceptions/NotFoundError');
+const emailFormatSender = require('../../utils/emailFormatSender');
+const InvariantError = require('../../exceptions/InvariantError');
 
 class LeadsService {
-  constructor(pool, leadHistoriesService) {
+  constructor(pool, transporter, leadHistoriesService) {
     this._pool = pool;
+    this._transporter = transporter;
     this._leadHistoriesService = leadHistoriesService;
   }
 
@@ -153,6 +156,24 @@ class LeadsService {
     );
 
     return result.rows[0].id;
+  }
+
+  async sendEmailToLead(leadId, userId) {
+    const lead = await this.getLeadsDetail(leadId);
+    const emailFormat = emailFormatSender(lead);
+
+    try {
+      await this._transporter.sendMail(emailFormat);
+    } catch (error) {
+      throw new InvariantError('Gagal mengirim email', error.message);
+    }
+
+    await this._leadHistoriesService.addHistory(
+      leadId,
+      userId,
+      'EMAIL_SENT',
+      'Deposit email sent'
+    );
   }
 
   // Export daftar leads dalam format CSV

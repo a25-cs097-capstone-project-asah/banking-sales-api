@@ -1,5 +1,6 @@
-// Import database
+// Import config
 const pool = require('../../config/database');
+const transporter = require('../../config/nodeMailer');
 
 // Import service
 const UsersService = require('./UsersService');
@@ -13,7 +14,7 @@ const LeadHistoriesService = require('./LeadHistoriesService');
 const usersService = new UsersService(pool);
 const authenticationsService = new AuthenticationsService(pool);
 const leadHistoriesService = new LeadHistoriesService(pool);
-const leadsService = new LeadsService(pool, leadHistoriesService);
+const leadsService = new LeadsService(pool, transporter, leadHistoriesService);
 const dashboardService = new DashboardService(pool);
 const notesService = new NotesService(pool, leadHistoriesService);
 

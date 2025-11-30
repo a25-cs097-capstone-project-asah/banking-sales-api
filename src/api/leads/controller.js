@@ -3,6 +3,7 @@ const asyncHandler = require('../../utils/asyncHandler');
 const { leadsService } = require('../../services/postgre');
 const { translatedLeads, leadFields } = require('../../utils/getLeadsHelper');
 const putLeadStatusValidator = require('./validator');
+const producerService = require('../../services/rabbitMq/produserService');
 
 /**
  * @api {get} /leads Ambil semua leads
@@ -179,10 +180,34 @@ const exportLeadsController = asyncHandler(async (req, res) => {
   res.status(200).send(csv);
 });
 
+/**
+ * @api {post} /leads/:id/email Kirim penawaran deposito via email
+ * @apiName SendDepositEmail
+ * @apiGroup Leads
+ *
+ * @apiParam {String} id Lead ID
+ *
+ * @apiSuccess (200) {String} message
+ */
+const postSendEmailToLeadController = asyncHandler(async (req, res) => {
+  const message = {
+    leadId: req.params.id,
+    userId: req.userId,
+  };
+
+  await producerService.sendMessage('email-queue', JSON.stringify(message));
+
+  res.status(200).json({
+    status: 'success',
+    message: 'Permintaan Anda dalam antrian',
+  });
+});
+
 module.exports = {
   getAllLeadsController,
   getLeadDetailController,
   getPriorityLeadsController,
   putLeadStatusByIdController,
   exportLeadsController,
+  postSendEmailToLeadController,
 };

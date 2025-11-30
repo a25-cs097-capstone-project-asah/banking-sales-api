@@ -14,4 +14,6 @@ module.exports = {
   env: process.env.NODE_ENV || 'development',
   userPass: process.env.USER_PASSWORD,
   ML_API_URL: process.env.ML_API_URL,
+  rabbitmqUrl: process.env.RABBITMQ_URL || 'amqp://localhost:5672',
+  emailQueueName: process.env.EMAIL_QUEUE_NAME || 'email-queue',
 };
