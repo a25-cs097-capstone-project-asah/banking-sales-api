@@ -1,11 +1,24 @@
-require('dotenv').config();
 const amqp = require('amqplib');
 const { leadsService } = require('../services/postgre');
 const Listener = require('./Listener');
 
+const getConnectionOptions = () => {
+  if (process.env.RABBITMQ_URL.startsWith('amqps://')) {
+    return {
+      socketOptions: {
+        rejectUnauthorized: false,
+      },
+      connectionTimeout: 10000,
+      heartbeat: 30,
+    };
+  }
+  return {};
+};
+
 const connect = async () => {
   try {
-    const connection = await amqp.connect(process.env.RABBITMQ_URL);
+    const options = getConnectionOptions();
+    const connection = await amqp.connect(process.env.RABBITMQ_URL, options);
     const channel = await connection.createChannel();
 
     connection.on('close', () => {
@@ -22,12 +35,15 @@ const connect = async () => {
     });
 
     const listener = new Listener(leadsService);
-    
+
     channel.consume('email-queue', listener.listen, {
       noAck: true,
     });
   } catch (error) {
-    console.error('Consumer: Gagal terkoneksi. Menghubungkan kembali...', error);
+    console.error(
+      'Consumer: Gagal terkoneksi. Menghubungkan kembali...',
+      error
+    );
     setTimeout(connect, 5000);
   }
 };

@@ -6,11 +6,25 @@ class ProducerService {
     this.channel = null;
   }
 
+  getConnectionOptions() {
+    if (process.env.RABBITMQ_URL.startsWith('amqps://')) {
+      return {
+        socketOptions: {
+          rejectUnauthorized: false,
+        },
+        connectionTimeout: 10000,
+        heartbeat: 30,
+      };
+    }
+    return {};
+  }
+
   async getConnection() {
     if (!this.connection) {
       try {
-        this.connection = await amqp.connect(process.env.RABBITMQ_URL);
-        
+        const options = this.getConnectionOptions();
+        this.connection = await amqp.connect(process.env.RABBITMQ_URL, options);
+
         this.connection.on('close', () => {
           console.warn('Producer: Koneksi terputus. Menghubungkan kembali...');
           this.connection = null;

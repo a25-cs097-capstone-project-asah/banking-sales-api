@@ -1,4 +1,3 @@
-require('dotenv').config();
 const bcrypt = require('bcrypt');
 const { usersToModel } = require('../../utils/mapDBToModel');
 const { userPass } = require('../../config/environment');

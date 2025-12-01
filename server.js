@@ -1,3 +1,4 @@
+require('./src/config/environment');
 const app = require('./src/app');
 const consumer = require('./src/queue/consumer');
 const port = 5000;
