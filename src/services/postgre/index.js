@@ -1,6 +1,5 @@
 // Import config
-const pool = require('../../config/database');
-const transporter = require('../../config/nodeMailer');
+const { pool, transporter, redisClient } = require('../../config');
 
 // Import service
 const UsersService = require('./UsersService');

@@ -1,9 +1,10 @@
 const amqp = require('amqplib');
 const { leadsService } = require('../services/postgre');
 const Listener = require('./Listener');
+const { config } = require('../config');
 
 const getConnectionOptions = () => {
-  if (process.env.RABBITMQ_URL.startsWith('amqps://')) {
+  if (config.rabbitmq.server.startsWith('amqps://')) {
     return {
       socketOptions: {
         rejectUnauthorized: false,
@@ -18,7 +19,7 @@ const getConnectionOptions = () => {
 const connect = async () => {
   try {
     const options = getConnectionOptions();
-    const connection = await amqp.connect(process.env.RABBITMQ_URL, options);
+    const connection = await amqp.connect(config.rabbitmq.server, options);
     const channel = await connection.createChannel();
 
     connection.on('close', () => {
@@ -26,8 +27,8 @@ const connect = async () => {
       setTimeout(connect, 5000);
     });
 
-    connection.on('error', (err) => {
-      console.error('Consumer: Koneksi error:', err);
+    connection.on('error', (error) => {
+      console.error('Consumer: Koneksi error:', error);
     });
 
     await channel.assertQueue('email-queue', {

@@ -197,7 +197,7 @@ const postSendEmailToLeadController = asyncHandler(async (req, res) => {
 
   await producerService.sendMessage('email-queue', JSON.stringify(message));
 
-  res.status(200).json({
+  res.status(201).json({
     status: 'success',
     message: 'Permintaan Anda dalam antrian',
   });

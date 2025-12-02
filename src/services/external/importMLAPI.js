@@ -1,11 +1,9 @@
-const Pool = require('../../config/database');
-const { ML_API_URL } = require('../../config/environment');
+const { config, pool } = require('../../config');
 const fetchMLData = require('./helpers/fetchMLData');
 const transformMLData = require('./helpers/transformMLData');
 const { importLeads } = require('./helpers/importLeads');
 
-const pool = Pool;
-const mlAPI = ML_API_URL;
+const mlAPI = config.ml.serviceUrl;
 
 const importMLAPI = async () => {
   try {

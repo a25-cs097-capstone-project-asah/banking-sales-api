@@ -1,11 +1,11 @@
 const ClientError = require('../exceptions/ClientError');
 
 // eslint-disable-next-line no-unused-vars
-const errorHandler = (e, req, res, next) => {
-  if (e instanceof ClientError) {
-    return res.status(e.statusCode).json({
+const errorHandler = (error, req, res, next) => {
+  if (error instanceof ClientError) {
+    return res.status(error.statusCode).json({
       status: 'fail',
-      message: e.message,
+      message: error.message,
     });
   }
 

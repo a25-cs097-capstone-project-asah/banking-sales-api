@@ -1,6 +1,6 @@
 const bcrypt = require('bcrypt');
 const { usersToModel } = require('../../utils/mapDBToModel');
-const { userPass } = require('../../config/environment');
+const { userPass } = require('../../config');
 
 // Error handling
 const InvariantError = require('../../exceptions/InvariantError');

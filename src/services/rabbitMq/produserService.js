@@ -1,4 +1,5 @@
 const amqp = require('amqplib');
+const { config } = require('../../config');
 
 class ProducerService {
   constructor() {
@@ -7,7 +8,7 @@ class ProducerService {
   }
 
   getConnectionOptions() {
-    if (process.env.RABBITMQ_URL.startsWith('amqps://')) {
+    if (config.rabbitmq.server.startsWith('amqps://')) {
       return {
         socketOptions: {
           rejectUnauthorized: false,
@@ -23,7 +24,7 @@ class ProducerService {
     if (!this.connection) {
       try {
         const options = this.getConnectionOptions();
-        this.connection = await amqp.connect(process.env.RABBITMQ_URL, options);
+        this.connection = await amqp.connect(config.rabbitmq.server, options);
 
         this.connection.on('close', () => {
           console.warn('Producer: Koneksi terputus. Menghubungkan kembali...');

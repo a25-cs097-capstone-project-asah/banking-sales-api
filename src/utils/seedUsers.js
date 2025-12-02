@@ -1,4 +1,4 @@
-const pool = require('../config/database');
+const { pool } = require('../config');
 const { usersService } = require('../services/postgre');
 
 const seedUsers = async () => {
