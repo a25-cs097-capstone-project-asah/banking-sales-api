@@ -9,10 +9,11 @@ const emailFormatSender = require('../../utils/emailFormatSender');
 const InvariantError = require('../../exceptions/InvariantError');
 
 class LeadsService {
-  constructor(pool, transporter, leadHistoriesService) {
+  constructor(pool, transporter, leadHistoriesService, cacheService) {
     this._pool = pool;
     this._transporter = transporter;
     this._leadHistoriesService = leadHistoriesService;
+    this._cacheService = cacheService;
   }
 
   // Fitur menampilkan seluruh lead/calon nasabah
@@ -154,6 +155,9 @@ class LeadsService {
       'UPDATE_STATUS',
       `Status updated to ${validStatus}`
     );
+
+    await this._cacheService.del('stats');
+    await this._cacheService.del('distribution_stats');
 
     return result.rows[0].id;
   }

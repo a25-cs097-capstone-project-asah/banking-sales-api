@@ -1,10 +1,10 @@
 const { nanoid } = require('nanoid');
 const { leadHistoriesToModel } = require('../../utils/mapDBToModel');
-const NotFoundError = require('../../exceptions/NotFoundError');
 
 class LeadHistoriesService {
-  constructor(pool) {
+  constructor(pool, cacheService) {
     this._pool = pool;
+    this._cacheService = cacheService;
   }
 
   async addHistory(leadId, userId, action, details) {
@@ -17,10 +17,18 @@ class LeadHistoriesService {
       values: [id, leadId, userId, action, details, createdAt],
     };
 
+    await this._cacheService.del(`leads:${leadId}:histories`);
     await this._pool.query(query);
   }
 
   async getHistoriesByLeadId(leadId) {
+    const cachedHistories = await this._cacheService.get(
+      `leads:${leadId}:histories`
+    );
+    if (cachedHistories) {
+      return JSON.parse(cachedHistories);
+    }
+
     const query = {
       text: `SELECT lead_histories.*, users.fullname
              FROM lead_histories
@@ -31,7 +39,13 @@ class LeadHistoriesService {
     };
 
     const result = await this._pool.query(query);
-    return result.rows.map(leadHistoriesToModel);
+    const leadHistoryMap = result.rows.map(leadHistoriesToModel);
+
+    await this._cacheService.set(
+      `leads:${leadId}:histories`,
+      JSON.stringify(leadHistoryMap)
+    );
+    return leadHistoryMap;
   }
 
   async getAllHistories() {

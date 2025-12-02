@@ -4,8 +4,7 @@
   "description": "RESTful API untuk portal banking sales web.",
   "main": "server",
   "scripts": {
-    "start": "NODE_ENV=production node server",
-    "dev": "nodemon server",
+    "start": "nodemon server",
     "migrate": "node-pg-migrate",
     "psql": "psql postgres://dryann:driann--12@localhost:5432/banking_sales_db",
     "apidoc": "npx apidoc -i src -o apidoc",
@@ -33,7 +32,8 @@
     "nanoid": "^5.1.6",
     "node-pg-migrate": "^8.0.3",
     "nodemailer": "^7.0.11",
-    "pg": "^8.16.3"
+    "pg": "^8.16.3",
+    "redis": "^5.10.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",

@@ -10,7 +10,7 @@ const errorHandler = (error, req, res, next) => {
   }
 
   // error duplikat username
-  if (e.code === '23505') {
+  if (error.code === '23505') {
     return res.status(400).json({
       status: 'fail',
       message: 'Username sudah digunakan.',
@@ -18,7 +18,7 @@ const errorHandler = (error, req, res, next) => {
   }
 
   // error tak terduga
-  console.log(e);
+  console.log(error);
   res.status(500).json({
     status: 'error',
     message: 'Terjadi kegagalan pada server kami.',

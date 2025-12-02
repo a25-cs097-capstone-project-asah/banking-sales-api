@@ -4,12 +4,18 @@ const {
 } = require('../../utils/mapDBToModel');
 
 class DashboardService {
-  constructor(pool) {
+  constructor(pool, cacheService) {
     this._pool = pool;
+    this._cacheService = cacheService;
   }
 
   // Fitur menampilkan statistik pada dashboard
   async getStats() {
+    const cachedStats = await this._cacheService.get('stats');
+    if (cachedStats) {
+      return JSON.parse(cachedStats);
+    }
+
     const query = `SELECT COUNT(*) AS total_leads,
                         COUNT(*) FILTER (WHERE status = 'converted') AS converted_leads,
                         COUNT(*) FILTER (WHERE category = 'high') AS high_priority_leads,
@@ -30,7 +36,7 @@ class DashboardService {
     const averageScore = parseFloat(row.average_score);
     const followUpLeads = parseInt(row.follow_up_leads);
 
-    return {
+    const statsData = {
       totalLeads,
       convertedLeads,
       highPriorityLeads,
@@ -38,6 +44,9 @@ class DashboardService {
       averageScore,
       followUpLeads,
     };
+
+    await this._cacheService.set('stats', JSON.stringify(statsData));
+    return statsData;
   }
 
   // Menampilkan data trend konversi dalam kurun 7 hari terakhir
@@ -63,6 +72,13 @@ class DashboardService {
 
   // Menampilkan persentase leads berdasarkan kategori pada pie chart
   async getDistributionStats() {
+    const cachedDistribution = await this._cacheService.get(
+      'distribution_stats'
+    );
+    if (cachedDistribution) {
+      return JSON.parse(cachedDistribution);
+    }
+
     const result = await this._pool.query(
       `SELECT category, COUNT(*) AS count
         FROM leads WHERE category IS NOT NULL
@@ -74,7 +90,12 @@ class DashboardService {
       END`
     );
 
-    return result.rows.map(distributionStatsToModel);
+    const distributionData = result.rows.map(distributionStatsToModel);
+    await this._cacheService.set(
+      'distribution_stats',
+      JSON.stringify(distributionData)
+    );
+    return distributionData;
   }
 }
 

@@ -5,9 +5,10 @@ const { notesToModel } = require('../../utils/mapDBToModel');
 const AuthorizationError = require('../../exceptions/AuthorizationError');
 
 class NotesService {
-  constructor(pool, leadHistoriesService) {
+  constructor(pool, leadHistoriesService, cacheService) {
     this._pool = pool;
     this._leadHistoriesService = leadHistoriesService;
+    this._cacheService = cacheService;
   }
 
   async addNotes(leadId, userId, body) {
@@ -33,6 +34,7 @@ class NotesService {
       'Note added'
     );
 
+    await this._cacheService.del(`leads:${leadId}:notes`);
     return result.rows[0].id;
   }
 
@@ -49,6 +51,11 @@ class NotesService {
   }
 
   async getNotesByLeadId(leadId) {
+    const cachedNotes = await this._cacheService.get(`leads:${leadId}:notes`);
+    if (cachedNotes) {
+      return JSON.parse(cachedNotes);
+    }
+
     const query = {
       text: `SELECT notes.id, notes.body, notes.created_at, users.fullname, users.role
               FROM notes
@@ -59,7 +66,13 @@ class NotesService {
     };
 
     const result = await this._pool.query(query);
-    return result.rows.map(notesToModel);
+    const notesData = result.rows.map(notesToModel);
+
+    await this._cacheService.set(
+      `leads:${leadId}:notes`,
+      JSON.stringify(notesData)
+    );
+    return notesData;
   }
 
   async editNoteByNoteId(noteId, leadId, userId, { body }) {
@@ -79,6 +92,8 @@ class NotesService {
       'EDIT_NOTE',
       'Note edited'
     );
+
+    await this._cacheService.del(`leads:${leadId}:notes`);
   }
 
   async deleteNoteByNoteId(noteId, leadId, userId) {
@@ -98,6 +113,8 @@ class NotesService {
       'DELETE_NOTE',
       'Note deleted'
     );
+
+    await this._cacheService.del(`leads:${leadId}:notes`);
   }
 
   async verifyNoteAccess(noteId, userId) {

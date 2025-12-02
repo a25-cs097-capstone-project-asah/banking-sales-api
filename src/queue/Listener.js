@@ -10,7 +10,7 @@ class Listener {
       const { leadId, userId } = JSON.parse(message.content.toString());
       await this._leadsService.sendEmailToLead(leadId, userId);
 
-      console.log(`Email berhasil dikirim: ${message}`);
+      console.log('Email berhasil dikirim');
     } catch (error) {
       console.error('Email gagal diproses', error);
     }

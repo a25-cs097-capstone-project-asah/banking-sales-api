@@ -11,8 +11,8 @@ const config = {
   },
 
   jwt: {
-    accessToken: process.env.ACCESS_TOKEN,
-    refreshToken: process.env.REFRESH_TOKEN,
+    accessToken: process.env.ACCESS_TOKEN_KEY,
+    refreshToken: process.env.REFRESH_TOKEN_KEY,
   },
 
   ml: {
